@@ -135,9 +135,12 @@ array = []
 for i in range(0, len(cbl_sav)):
     x = cbl_sav.iloc[i]  # grab the first row
     x = x['Amount']
+    x = float(x)
     if (x < 0):
+
         condition = 'outgoing'
         array.append(condition)
+
     if (x >= 0):
         condition = 'incoming'
         array.append(condition)
@@ -198,13 +201,12 @@ anz['Incoming/Outgoing'] = pd.DataFrame(array)
 anz = anz.drop(columns=['Transaction Date','Processed Date','Type','Details',
                         'Reference','Code','To/From Account Number',
                         'Conversion Charge','Foreign Currency Amount','Particulars'], axis = 1)
-anz = anz.rename(columns={"Balance": "Running Balance"})
+anz = anz.rename(columns={"Balance": "Running Bal."})
 anz['Origin'] = 'ANZ'
 # todo check data lenght so we're not missing anything
 combine = pd.concat([sc_sav, sc_check, sc_credit, cbl_credit, cbl_checking, cbl_sav, anz]).reset_index(drop=True)
 print(combine.columns)
 combine = combine.drop(columns=['Unnamed: 8'])
-combine.to_excel('testing.xlsx')
 
 
 
