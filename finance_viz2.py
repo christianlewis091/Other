@@ -31,16 +31,18 @@ cbl_savings = combine.loc[(combine['Origin'] == 'CBL Savings')]
 x = ins['Amount']
 x.to_excel('testing2.xlsx')
 
-xtr_subsplot = fig.add_subplot(gs[0:3, 0:4])
+# xtr_subsplot = fig.add_subplot(gs[0:3, 0:4])
 plt.scatter(ins['Decimal_date'], ins['Amount'], label='Ins')
 plt.plot(anz['Decimal_date'], anz['Running Bal.'], color=colors2[3], label='ANZ')
 plt.plot(sc_savings['Decimal_date'], sc_savings['Running Bal.'], color=colors[1], label='SC Savings')
 plt.plot(sc_checking['Decimal_date'], sc_checking['Running Bal.'], color=colors[5], label='SC Checking')
 plt.plot(cbl_checking['Decimal_date'], cbl_checking['Running Bal.'], color=colors2[1], label='cbl_checking')
 plt.plot(cbl_savings['Decimal_date'], cbl_savings['Running Bal.'], color=colors2[5], label='cbl_savings')
-plt.legend()
-xtr_subsplot = fig.add_subplot(gs[3:4, 0:4])
 plt.scatter(outs['Decimal_date'], outs['Amount'], color=colors[3], label='outs')
 plt.legend()
-plt.savefig('p1.png', dpi=300, bbox_inches="tight")
+# xtr_subsplot = fig.add_subplot(gs[3:4, 0:4])
+# plt.scatter(outs['Decimal_date'], outs['Amount'], color=colors[3], label='outs')
+# plt.legend()
+# plt.savefig('p1.png', dpi=300, bbox_inches="tight")
 # plot data for left panel
+plt.show()

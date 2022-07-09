@@ -205,16 +205,145 @@ anz = anz.rename(columns={"Balance": "Running Bal."})
 anz['Origin'] = 'ANZ'
 # todo check data lenght so we're not missing anything
 combine = pd.concat([sc_sav, sc_check, sc_credit, cbl_credit, cbl_checking, cbl_sav, anz]).reset_index(drop=True)
-print(combine.columns)
 combine = combine.drop(columns=['Unnamed: 8'])
+print(len(combine))
+"""
+Now that the data has been pre-processed, I'm going to try to categorize them by searching for these keywords. 
+At the end, it will put together a sheet with the added keys, and then I can filter on them and see our spending habits
+in more detail. 
+I can search faster for those that haven't been added yet then searching for NaN. 
+"""
+
+invest_list = ['BETTER', 'BRK 6878', 'Acorns Invest']
+Intra_transfer_list = ['CHK 7388']
+subs_list = ['NOTION','SPOTIFY', 'Netflix','HBO','ADOBE CREATIVE','APPLE','GOOGLE','KPCC','WNYC','SQ *CENTER FOR INDIVIDUAL']
+utility_list = ['SPARK','SKINNY','Marterra', 'SO CAL GAS', 'SO CAL EDISON', 'ATT*BILL','ALLSTATE','TMOBILE']
+gas_list = ['CHEVRON','76 - COSTA MESA']
+grocery_list = ['H MART','ORIENTAL PANTRY','NEW WORLD','99 RANCH MARKET', 'SPROUTS FARMERS MAR', 'ZION','SEIWA','TOKYO CENTRAL','RALPHS','VONS','TRADER JOE','WHOLESOME','SMART AND FINAL']
+health_list = ['Paulas Choice LLC','CVS','WALGREENS','WHOLE HEALTH PHARMACY']
+clothing_list = ['BAGGU','LULULEMON','BANANAREPUBLIC US 8045','Uniqlo','EVERLANE','OUTDOOR VOICES','URBAN OUTFITTERS','MADEWELL']
+pottery_list = ['AARDVARK', 'SQ *COSTA MESA CERAMICS S', 'CITY OF IRVINE COMMUNITY']
+eatout_list = ['KAIZEN SHABU','TST* PARADISE DYNASTY LLC','SQ *HUDSONS COOKIES','BCD-IRVINE','WAHOO','SQ *FOUR SEA RESTAURANT','IN N OUT BURGER 038','LANTERN CAFE PHO VIETNAME','TST* Jans Health Bar - C','KAZUYAKITORI & SAKEBAR',
+               'QILIN TEA HOUSE','MITSUWA','JJ BAKERY']
+amazon_list = ['AMZN Mktp']
+coffee_list = ['SQ *BACIO DI LATTE','SQ *NEAT COFFEE','THE COFFEE BEAN Y TEA LEA']
+household_list = ['BEST BUY','HOME DEPOT','IKEA ORANGE COUNTY LLC']
+unexpected_list = ['UBER TRIP','PET HOSPITAL','BEVERLY RADIOLOGY MEDICAL''EXPRESSCARE MEDICAL CLINI','FBI IDENTIFICATION RECORD']
+sammy_allowance = ['ARTARAMA','NRB FASHION COMPANY LT','ROOTS JEWELRY','GDP*AHRITTAUM BEAUTY SALO','SEPHORA.COM']
+cbl_allowance = []
+
+# Now I'm going to change all values with "Betterment and Acorn" from transactions to investments.
+mt_array = []
+for i in range(0, len(combine)):
+    row = combine.iloc[i]  # access the first row
+    descrip = row['Description']  # access the column "descriptions"
+    for item in invest_list:
+        if item in descrip:
+            mt_array.append(row)
+Investments = pd.DataFrame(mt_array).reset_index(drop = True)
+Investments['Type'] = 'Investments'
+
+# Intra transfers
+mt_array = []
+for i in range(0, len(combine)):
+    row = combine.iloc[i]  # access the first row
+    descrip = row['Description']  # access the column "descriptions"
+    for item in Intra_transfer_list:
+        if item in descrip:
+            mt_array.append(row)
+Intra_transfers = pd.DataFrame(mt_array).reset_index(drop = True)
+Intra_transfers['Type'] = 'Intra_transfers'
+
+# Subscriptions
+mt_array = []
+for i in range(0, len(combine)):
+    row = combine.iloc[i]  # access the first row
+    descrip = row['Description']  # access the column "descriptions"
+    for item in subs_list:
+        if item in descrip:
+            mt_array.append(row)
+Subscriptions = pd.DataFrame(mt_array).reset_index(drop = True)
+Subscriptions['Type'] = 'Subscriptions'
+
+# Rent/Utilities
+mt_array = []
+for i in range(0, len(combine)):
+    row = combine.iloc[i]  # access the first row
+    descrip = row['Description']  # access the column "descriptions"
+    for item in utility_list:
+        if item in descrip:
+            mt_array.append(row)
+Rent_Utilities = pd.DataFrame(mt_array).reset_index(drop = True)
+Rent_Utilities['Type'] = 'Rent_Utilities'
+
+# Gas
+mt_array = []
+for i in range(0, len(combine)):
+    row = combine.iloc[i]  # access the first row
+    descrip = row['Description']  # access the column "descriptions"
+    for item in gas_list:
+        if item in descrip:
+            mt_array.append(row)
+Gas = pd.DataFrame(mt_array).reset_index(drop = True)
+Gas['Type'] = 'Gas'
+
+# Groceries
+mt_array = []
+for i in range(0, len(combine)):
+    row = combine.iloc[i]  # access the first row
+    descrip = row['Description']  # access the column "descriptions"
+    for item in grocery_list:
+        if item in descrip:
+            mt_array.append(row)
+Groceries = pd.DataFrame(mt_array).reset_index(drop = True)
+Groceries['Type'] = 'Groceries'
+
+# Health and Cosmetics
+mt_array = []
+for i in range(0, len(combine)):
+    row = combine.iloc[i]  # access the first row
+    descrip = row['Description']  # access the column "descriptions"
+    for item in health_list:
+        if item in descrip:
+            mt_array.append(row)
+Health = pd.DataFrame(mt_array).reset_index(drop = True)
+Health['Type'] = 'Health'
+
+# Clothing
+mt_array = []
+for i in range(0, len(combine)):
+    row = combine.iloc[i]  # access the first row
+    descrip = row['Description']  # access the column "descriptions"
+    for item in clothing_list:
+        if item in descrip:
+            mt_array.append(row)
+Clothing = pd.DataFrame(mt_array).reset_index(drop = True)
+Clothing['Type'] = 'Clothing'
+
+# Eating Out
+mt_array = []
+for i in range(0, len(combine)):
+    row = combine.iloc[i]  # access the first row
+    descrip = row['Description']  # access the column "descriptions"
+    for item in eatout_list:
+        if item in descrip:
+            mt_array.append(row)
+EatingOut= pd.DataFrame(mt_array).reset_index(drop = True)
+EatingOut['Type'] = 'EatingOut'
+
+# Ceramics
+mt_array = []
+for i in range(0, len(combine)):
+    row = combine.iloc[i]  # access the first row
+    descrip = row['Description']  # access the column "descriptions"
+    for item in pottery_list:
+        if item in descrip:
+            mt_array.append(row)
+Ceramics = pd.DataFrame(mt_array).reset_index(drop = True)
+Ceramics['Type'] = 'Ceramics'
 
 
-
-
-
-
-
-
-
-
+# Check what I'm missing by seeing what doesnt have a key yet
+categorizing = pd.concat([Investments, Intra_transfers, Rent_Utilities, Subscriptions, Rent_Utilities, Gas, Groceries, Health, Clothing, EatingOut, Ceramics]).reset_index(drop = True)
+print(len(combine) - len(categorizing))
 
