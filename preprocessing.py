@@ -231,7 +231,26 @@ coffee_list = ['SQ *BACIO DI LATTE','SQ *NEAT COFFEE','THE COFFEE BEAN Y TEA LEA
 household_list = ['BEST BUY','HOME DEPOT','IKEA ORANGE COUNTY LLC']
 unexpected_list = ['UBER TRIP','PET HOSPITAL','BEVERLY RADIOLOGY MEDICAL''EXPRESSCARE MEDICAL CLINI','FBI IDENTIFICATION RECORD']
 sammy_allowance = ['ARTARAMA','NRB FASHION COMPANY LT','ROOTS JEWELRY','GDP*AHRITTAUM BEAUTY SALO','SEPHORA.COM']
-cbl_allowance = []
+
+master_array = [invest_list, Intra_transfer_list, subs_list, utility_list, gas_list, grocery_list, health_list, clothing_list, pottery_list, eatout_list, amazon_list, coffee_list,
+                household_list, unexpected_list, sammy_allowance]
+array = []
+
+for i in range(0, len(master_array)):
+    x = master_array[i]      # access the first sublist
+    print(x)
+    for item in x:
+        array.append(item)
+
+new_master_array = array
+
+
+
+
+
+
+
+
 
 # Now I'm going to change all values with "Betterment and Acorn" from transactions to investments.
 mt_array = []
@@ -332,7 +351,7 @@ for i in range(0, len(combine)):
 EatingOut= pd.DataFrame(mt_array).reset_index(drop = True)
 EatingOut['Type'] = 'EatingOut'
 
-# Ceramics
+# pottery
 mt_array = []
 for i in range(0, len(combine)):
     row = combine.iloc[i]  # access the first row
@@ -340,20 +359,22 @@ for i in range(0, len(combine)):
     for item in pottery_list:
         if item in descrip:
             mt_array.append(row)
-Ceramics = pd.DataFrame(mt_array).reset_index(drop = True)
-Ceramics['Type'] = 'Ceramics'
+Pottery = pd.DataFrame(mt_array).reset_index(drop = True)
+Pottery['Type'] = 'Pottery'
 
+result = []
+mt_array = []
+for i in range(0, len(combine)):
+    row = combine.iloc[i]  # access the first row
+    descrip = row['Description']  # access the column "descriptions"
+    if item in master_array in descrip:
+        print('yes')
 
-# Check what I'm missing by seeing what doesnt have a key yet
-categorizing = pd.concat([Investments, Intra_transfers, Rent_Utilities, Subscriptions, Rent_Utilities, Gas, Groceries, Health, Clothing, EatingOut, Ceramics]).reset_index(drop = True)
-combine['Amount'] = np.float64(combine['Amount'])
-categorizing.to_excel('categorized.xlsx')
+# Categorized = pd.DataFrame(mt_array).reset_index(drop = True)
+# Pottery['Type'] = 'Pottery'
 
+# # Check what I'm missing by seeing what doesnt have a key yet
+categorizing = pd.concat([Investments, Intra_transfers, Rent_Utilities, Subscriptions, Rent_Utilities, Gas, Groceries, Health, Clothing, EatingOut, Pottery, NoKey])
 
-z = categorizing.merge(combine, how = '', on='Merge_Index')
-z.to_excel('test.xlsx')
-print(len(z))
-print(z.columns)
-
-# TODO why is the list longer now?
-
+# print(len(categorizing))
+# # categorizing.to_excel('test.xlsx')
