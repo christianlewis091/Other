@@ -206,7 +206,8 @@ anz['Origin'] = 'ANZ'
 # todo check data lenght so we're not missing anything
 combine = pd.concat([sc_sav, sc_check, sc_credit, cbl_credit, cbl_checking, cbl_sav, anz]).reset_index(drop=True)
 combine = combine.drop(columns=['Unnamed: 8'])
-print(len(combine))
+combine['Merge_Index'] = np.linspace(0, len(combine)-1, len(combine))
+combine.to_excel('reformat.xlsx')
 """
 Now that the data has been pre-processed, I'm going to try to categorize them by searching for these keywords. 
 At the end, it will put together a sheet with the added keys, and then I can filter on them and see our spending habits
@@ -345,5 +346,14 @@ Ceramics['Type'] = 'Ceramics'
 
 # Check what I'm missing by seeing what doesnt have a key yet
 categorizing = pd.concat([Investments, Intra_transfers, Rent_Utilities, Subscriptions, Rent_Utilities, Gas, Groceries, Health, Clothing, EatingOut, Ceramics]).reset_index(drop = True)
-print(len(combine) - len(categorizing))
+combine['Amount'] = np.float64(combine['Amount'])
+categorizing.to_excel('categorized.xlsx')
+
+
+z = categorizing.merge(combine, how = '', on='Merge_Index')
+z.to_excel('test.xlsx')
+print(len(z))
+print(z.columns)
+
+# TODO why is the list longer now?
 
