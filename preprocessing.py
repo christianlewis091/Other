@@ -207,7 +207,7 @@ anz['Origin'] = 'ANZ'
 combine = pd.concat([sc_sav, sc_check, sc_credit, cbl_credit, cbl_checking, cbl_sav, anz]).reset_index(drop=True)
 combine = combine.drop(columns=['Unnamed: 8'])
 combine['Merge_Index'] = np.linspace(0, len(combine)-1, len(combine))
-combine.to_excel('reformat.xlsx')
+# combine.to_excel('reformat.xlsx')
 """
 Now that the data has been pre-processed, I'm going to try to categorize them by searching for these keywords. 
 At the end, it will put together a sheet with the added keys, and then I can filter on them and see our spending habits
@@ -232,25 +232,11 @@ household_list = ['BEST BUY','HOME DEPOT','IKEA ORANGE COUNTY LLC']
 unexpected_list = ['UBER TRIP','PET HOSPITAL','BEVERLY RADIOLOGY MEDICAL''EXPRESSCARE MEDICAL CLINI','FBI IDENTIFICATION RECORD']
 sammy_allowance = ['ARTARAMA','NRB FASHION COMPANY LT','ROOTS JEWELRY','GDP*AHRITTAUM BEAUTY SALO','SEPHORA.COM']
 
-master_array = [invest_list, Intra_transfer_list, subs_list, utility_list, gas_list, grocery_list, health_list, clothing_list, pottery_list, eatout_list, amazon_list, coffee_list,
-                household_list, unexpected_list, sammy_allowance]
-array = []
-
-for i in range(0, len(master_array)):
-    x = master_array[i]      # access the first sublist
-    print(x)
-    for item in x:
-        array.append(item)
-
-new_master_array = array
+combine['Type'] = 'TBD'
 
 
-
-
-
-
-
-
+# # master_array = [invest_list, Intra_transfer_list, subs_list, utility_list, gas_list, grocery_list, health_list, clothing_list, pottery_list, eatout_list, amazon_list, coffee_list,
+# #                 household_list, unexpected_list, sammy_allowance]
 
 # Now I'm going to change all values with "Betterment and Acorn" from transactions to investments.
 mt_array = []
@@ -362,19 +348,72 @@ for i in range(0, len(combine)):
 Pottery = pd.DataFrame(mt_array).reset_index(drop = True)
 Pottery['Type'] = 'Pottery'
 
-result = []
 mt_array = []
 for i in range(0, len(combine)):
     row = combine.iloc[i]  # access the first row
     descrip = row['Description']  # access the column "descriptions"
-    if item in master_array in descrip:
-        print('yes')
+    for item in amazon_list:
+        if item in descrip:
+            mt_array.append(row)
+Amazon = pd.DataFrame(mt_array).reset_index(drop = True)
+Amazon['Type'] = 'Amazon'
 
-# Categorized = pd.DataFrame(mt_array).reset_index(drop = True)
-# Pottery['Type'] = 'Pottery'
+mt_array = []
+for i in range(0, len(combine)):
+    row = combine.iloc[i]  # access the first row
+    descrip = row['Description']  # access the column "descriptions"
+    for item in coffee_list:
+        if item in descrip:
+            mt_array.append(row)
+Coffee = pd.DataFrame(mt_array).reset_index(drop = True)
+Coffee['Type'] = 'Coffee'
 
-# # Check what I'm missing by seeing what doesnt have a key yet
-categorizing = pd.concat([Investments, Intra_transfers, Rent_Utilities, Subscriptions, Rent_Utilities, Gas, Groceries, Health, Clothing, EatingOut, Pottery, NoKey])
+mt_array = []
+for i in range(0, len(combine)):
+    row = combine.iloc[i]  # access the first row
+    descrip = row['Description']  # access the column "descriptions"
+    for item in household_list:
+        if item in descrip:
+            mt_array.append(row)
+Household = pd.DataFrame(mt_array).reset_index(drop = True)
+Household['Type'] = 'Household'
 
-# print(len(categorizing))
-# # categorizing.to_excel('test.xlsx')
+mt_array = []
+for i in range(0, len(combine)):
+    row = combine.iloc[i]  # access the first row
+    descrip = row['Description']  # access the column "descriptions"
+    for item in unexpected_list:
+        if item in descrip:
+            mt_array.append(row)
+Unexpected = pd.DataFrame(mt_array).reset_index(drop = True)
+Unexpected['Type'] = 'Unexpected'
+
+mt_array = []
+for i in range(0, len(combine)):
+    row = combine.iloc[i]  # access the first row
+    descrip = row['Description']  # access the column "descriptions"
+    for item in sammy_allowance:
+        if item in descrip:
+            mt_array.append(row)
+Sammy_allowance = pd.DataFrame(mt_array).reset_index(drop = True)
+Sammy_allowance['Type'] = 'Sammy_allowance'
+
+
+# Check what I'm missing by seeing what doesnt have a key yet
+categorizing = pd.concat([Investments, Intra_transfers, Rent_Utilities, Subscriptions, Rent_Utilities, Gas, Groceries, Health, Clothing, EatingOut, Pottery, Amazon, Coffee, Household, Unexpected, Sammy_allowance])
+categorizing['Amount'] = np.float64(categorizing['Amount'])
+combine['Amount'] = np.float64(combine['Amount'])
+print(len(categorizing))
+print(len(combine))
+x = pd.concat([categorizing, combine]).drop_duplicates(subset = 'Merge_Index', keep='first')
+print(len(x))
+x.to_excel('check.xlsx')
+
+"""
+Im going to check for what doesn't have a key yet by running a for loop and checking 
+the Merge Indexes. 
+
+"""
+# TODO ADD THE REMAINING TRANSACTION KEYS INTO THE LIBRARY AND CONTINUE TO RUN UNTIL NO TBD's remain.
+# THEN CAN START THE ANALYSIS
+
