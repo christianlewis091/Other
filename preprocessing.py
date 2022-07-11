@@ -584,6 +584,7 @@ x = pd.concat([categorizing, combine]).drop_duplicates(subset = 'Merge_Index', k
 print(len(x))
 # x.to_excel('check.xlsx')
 
+  
 """
 Im going to check for what doesn't have a key yet by running a for loop and checking 
 the Merge Indexes. 
