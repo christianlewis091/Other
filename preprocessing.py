@@ -3,7 +3,7 @@ import pandas as pd
 from finance_functions import long_date_to_decimal_date
 import matplotlib.pyplot as plt
 
-def monthly_averages(x_values, y_values):
+def monthly_sums(x_values, y_values):
     x_values = np.array(x_values)
     y_values = np.array(y_values)
 
@@ -66,7 +66,7 @@ def monthly_averages(x_values, y_values):
             # clean and append that information to a permanent array
             if len(temparray_x) != 0:
                 tempsum = sum(temparray_x)
-                tempmean = tempsum / len(temparray_x)  # this works fine because it averages the same # repeatedly
+                tempmean = tempsum / len(temparray_x)  # this works fine because it sums the same # repeatedly
 
                 tempsum2 = sum(temparray_y)
                 tempmean2 = tempsum2 / len(temparray_y)
@@ -74,7 +74,7 @@ def monthly_averages(x_values, y_values):
 
 
                 permarray_x.append(tempmean)
-                permarray_y.append(tempmean2)
+                permarray_y.append(tempsum2)
 
                 # print(permarray_x)
                 # print(permarray_y)
@@ -339,7 +339,7 @@ for i in range(0, len(combine)):
 Investments = pd.DataFrame(mt_array).reset_index(drop = True)
 Investments['Type'] = 'Investments'
 
-invest_av = monthly_averages(Investments['Decimal_date'], Investments['Amount'])
+invest_av = monthly_sums(Investments['Decimal_date'], Investments['Amount'])
 
 # Intra transfers
 mt_array = []
@@ -362,7 +362,7 @@ for i in range(0, len(combine)):
             mt_array.append(row)
 Subscriptions = pd.DataFrame(mt_array).reset_index(drop = True)
 Subscriptions['Type'] = 'Subscriptions'
-subs_av = monthly_averages(Subscriptions['Decimal_date'], Subscriptions['Amount'])
+subs_av = monthly_sums(Subscriptions['Decimal_date'], Subscriptions['Amount'])
 
 
 # Rent/Utilities
@@ -375,7 +375,7 @@ for i in range(0, len(combine)):
             mt_array.append(row)
 Rent_Utilities = pd.DataFrame(mt_array).reset_index(drop = True)
 Rent_Utilities['Type'] = 'Rent_Utilities'
-rent_av = monthly_averages(Rent_Utilities['Decimal_date'], Rent_Utilities['Amount'])
+rent_av = monthly_sums(Rent_Utilities['Decimal_date'], Rent_Utilities['Amount'])
 
 
 # Gas
@@ -388,7 +388,7 @@ for i in range(0, len(combine)):
             mt_array.append(row)
 Gas = pd.DataFrame(mt_array).reset_index(drop = True)
 Gas['Type'] = 'Gas'
-gas_av = monthly_averages(Gas['Decimal_date'], Gas['Amount'])
+gas_av = monthly_sums(Gas['Decimal_date'], Gas['Amount'])
 
 
 # Groceries
@@ -401,7 +401,7 @@ for i in range(0, len(combine)):
             mt_array.append(row)
 Groceries = pd.DataFrame(mt_array).reset_index(drop = True)
 Groceries['Type'] = 'Groceries'
-grocer_av = monthly_averages(Groceries['Decimal_date'], Groceries['Amount'])
+grocer_av = monthly_sums(Groceries['Decimal_date'], Groceries['Amount'])
 
 # Health and Cosmetics
 mt_array = []
@@ -413,7 +413,7 @@ for i in range(0, len(combine)):
             mt_array.append(row)
 Health = pd.DataFrame(mt_array).reset_index(drop = True)
 Health['Type'] = 'Health'
-health_av = monthly_averages(Health['Decimal_date'], Health['Amount'])
+health_av = monthly_sums(Health['Decimal_date'], Health['Amount'])
 
 
 # Clothing
@@ -426,7 +426,7 @@ for i in range(0, len(combine)):
             mt_array.append(row)
 Clothing = pd.DataFrame(mt_array).reset_index(drop = True)
 Clothing['Type'] = 'Clothing'
-clothing_av = monthly_averages(Clothing['Decimal_date'], Clothing['Amount'])
+clothing_av = monthly_sums(Clothing['Decimal_date'], Clothing['Amount'])
 
 
 # Eating Out
@@ -439,7 +439,7 @@ for i in range(0, len(combine)):
             mt_array.append(row)
 EatingOut= pd.DataFrame(mt_array).reset_index(drop = True)
 EatingOut['Type'] = 'EatingOut'
-eatout_av = monthly_averages(EatingOut['Decimal_date'], EatingOut['Amount'])
+eatout_av = monthly_sums(EatingOut['Decimal_date'], EatingOut['Amount'])
 
 
 # pottery
@@ -452,7 +452,7 @@ for i in range(0, len(combine)):
             mt_array.append(row)
 Pottery = pd.DataFrame(mt_array).reset_index(drop = True)
 Pottery['Type'] = 'Pottery'
-pottery_av = monthly_averages(Pottery['Decimal_date'], Pottery['Amount'])
+pottery_av = monthly_sums(Pottery['Decimal_date'], Pottery['Amount'])
 
 
 mt_array = []
@@ -464,7 +464,7 @@ for i in range(0, len(combine)):
             mt_array.append(row)
 Amazon = pd.DataFrame(mt_array).reset_index(drop = True)
 Amazon['Type'] = 'Amazon'
-amazon_av = monthly_averages(Amazon['Decimal_date'], Amazon['Amount'])
+amazon_av = monthly_sums(Amazon['Decimal_date'], Amazon['Amount'])
 
 mt_array = []
 for i in range(0, len(combine)):
@@ -475,7 +475,7 @@ for i in range(0, len(combine)):
             mt_array.append(row)
 Coffee = pd.DataFrame(mt_array).reset_index(drop = True)
 Coffee['Type'] = 'Coffee'
-coffee_av = monthly_averages(Coffee['Decimal_date'], Coffee['Amount'])
+coffee_av = monthly_sums(Coffee['Decimal_date'], Coffee['Amount'])
 
 
 mt_array = []
@@ -487,7 +487,7 @@ for i in range(0, len(combine)):
             mt_array.append(row)
 Household = pd.DataFrame(mt_array).reset_index(drop = True)
 Household['Type'] = 'Household'
-house_av = monthly_averages(Household['Decimal_date'], Household['Amount'])
+house_av = monthly_sums(Household['Decimal_date'], Household['Amount'])
 
 
 mt_array = []
@@ -499,7 +499,7 @@ for i in range(0, len(combine)):
             mt_array.append(row)
 Unexpected = pd.DataFrame(mt_array).reset_index(drop = True)
 Unexpected['Type'] = 'Unexpected'
-unex_av = monthly_averages(Unexpected['Decimal_date'], Unexpected['Amount'])
+unex_av = monthly_sums(Unexpected['Decimal_date'], Unexpected['Amount'])
 
 
 mt_array = []
@@ -511,7 +511,7 @@ for i in range(0, len(combine)):
             mt_array.append(row)
 Sammy_allowance = pd.DataFrame(mt_array).reset_index(drop = True)
 Sammy_allowance['Type'] = 'Sammy_allowance'
-SCA_av = monthly_averages(Sammy_allowance['Decimal_date'], Sammy_allowance['Amount'])
+SCA_av = monthly_sums(Sammy_allowance['Decimal_date'], Sammy_allowance['Amount'])
 
 
 mt_array = []
@@ -523,7 +523,7 @@ for i in range(0, len(combine)):
             mt_array.append(row)
 Income = pd.DataFrame(mt_array).reset_index(drop = True)
 Income['Type'] = 'Income'
-# income_av = monthly_averages(Income['Decimal_date'], Income['Amount'])
+# income_av = monthly_sums(Income['Decimal_date'], Income['Amount'])
 
 mt_array = []
 for i in range(0, len(combine)):
@@ -545,7 +545,7 @@ for i in range(0, len(combine)):
             mt_array.append(row)
 CBL_allowance = pd.DataFrame(mt_array).reset_index(drop = True)
 CBL_allowance['Type'] = 'CBL allowance'
-CBLA_av = monthly_averages(CBL_allowance['Decimal_date'], CBL_allowance['Amount'])
+CBLA_av = monthly_sums(CBL_allowance['Decimal_date'], CBL_allowance['Amount'])
 
 
 mt_array = []
@@ -558,15 +558,17 @@ for i in range(0, len(combine)):
 out_w_friends = pd.DataFrame(mt_array).reset_index(drop = True)
 out_w_friends['Type'] = 'out w friends'
 
-plt.scatter(invest_av[0], invest_av[1], label='Investments', marker='o')
-plt.scatter(rent_av[0], rent_av[1], label='Rent/Utilities', marker='D')
-plt.scatter(gas_av[0], gas_av[1], label='Gas', marker='X')
-plt.scatter(grocer_av[0], grocer_av[1], label='Groceries', marker='^')
-plt.scatter(CBLA_av[0], CBLA_av[1], label='CBL_allowance', marker='.')
-plt.scatter(SCA_av[0], SCA_av[1], label='SC_allowance', marker='o')
+plt.plot(invest_av[0], invest_av[1], label='Investments', marker='o')
+plt.plot(rent_av[0], rent_av[1], label='Rent/Utilities', marker='D')
+plt.plot(gas_av[0], gas_av[1], label='Gas', marker='X')
+plt.plot(grocer_av[0], grocer_av[1], label='Groceries', marker='^')
+plt.plot(CBLA_av[0], CBLA_av[1], label='CBL_allowance', marker='.')
+plt.plot(SCA_av[0], SCA_av[1], label='SC_allowance', marker='o')
+plt.plot(unex_av[0], unex_av[1], label='Unexpected', marker='X')
+
 plt.legend()
 # plt.xlim(1980, 2020)
-plt.ylim(-750, 0)
+plt.ylim(-4500, 0)
 plt.show()
 # TODO the plot describes that the code isn't working properly. All numbers are way too low
 
