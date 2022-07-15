@@ -147,7 +147,7 @@ combine = pd.concat([sc_sav, sc_check, sc_credit, cbl_credit, cbl_checking, cbl_
 combine = combine.drop(columns=['Unnamed: 8'])
 combine['Merge_Index'] = np.linspace(0, len(combine)-1, len(combine))
 combine['Type'] = 'TBD'
-
+combine.to_excel('combined.xlsx')
 """
 Now that the data has been pre-processed, I'm going to try to categorize them by searching for these keywords. 
 At the end, it will put together a sheet with the added keys, and then I can filter on them and see our spending habits
