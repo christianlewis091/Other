@@ -157,91 +157,39 @@ for i in range(0, len(types)):
 
 
 # Pie chart, where the slices will be ordered and plotted counter-clockwise:
-
+""""""
 fig1, ax1 = plt.subplots()
 ax1.pie(percents, labels=types, autopct='%1.1f%%',
         shadow=True, startangle=90)
 ax1.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
 plt.show()
 
+"""
+Now that I've gotten a broad idea of our spending overall, 
+lets try to understand our savings. 
 
+I'm going to define our savings as: 
 
+Savings = Incoming - outgoing - investments. 
+Savings = Income - (all transactions) - investments [ leaving out the same categories above that are confusing]
+"""
 
+df = pd.read_excel(r'C:\Users\lewis\venv\python310\python-masterclass-remaster-shared\finances\combined_edited.xlsx')
+df_adjusted = df.loc[(df['Type'] != 'Paying Off Credit Cards') &
+             (df['Type'] != 'IntraTransfer') & (df['Type'] != 'Income') & (df['Type'] != 'Investments')]
 
+income = df.loc[(df['Type']) == 'Income']
+income = np.sum(income['Amount'])
 
+investments = df.loc[(df['Type']) == 'Investments']
+investments = np.sum(investments['Amount'])
 
+total_outgoing = np.sum(df_adjusted['Amount'])  # all outgoing real transactions
 
-
-
-
-
-
-
-
-
-
-
-
-# edit NAMES to edit the Pie chart and other calculations
-# names = list(np.unique(df['Type']))
-
-# names = ['Joint Allowance', 'Car','Subscriptions','Utilities','Gas List','Groceries','Health and Fitness','Clothing','Pottery','Eating Out','Amazon Purchases','Coffees','Household Items','Unexpected','Sammy Allowance','Christian Allowance','Out w Friends','Travel', 'Brazil','New York City']
-# print(type(names))
-#
-# # this loop does some math for each category of data found above from the Pre-processed spreadsheet.
-# total_outgoing =
-# template = pd.DataFrame()
-# categorical_totals = []
-#
-#
-# for i in range(0, len(names)):                                    # run a loop the length of the list above "names"
-#     batch = df.loc[(df['Type']) == names[i]]                      # grab a category from the list above.
-#     sum_batch = np.sum(batch['Amount'])                           # what's the grand total from that category?
-#
-#
-#
-#
-#     batch = monthly_sums(batch['Decimal_date'], batch['Amount'])  # find the monthly sum from X month.
-#     x = batch[0]  # date                                          # extract the date back out
-#     y = batch[1]  # sum                                           # extract the sum back out.
-#     summary = pd.DataFrame({"Date": x, "sum": y, "Type": names[i]}).dropna()
-#     totals = np.sum(summary['sum'])   # sum of the monthly sums
-#     summary = pd.DataFrame({"Date": x, "sum": y, "Type": names[i], "Total": totals}).dropna()  # add total to monthyl averages (I want grand total for a pie chart)
-#     template = pd.concat([template, summary])
-#
-#
-# gt = np.sum(template['sum'])
-#
-# template2 = pd.DataFrame()
-# for i in range(0, len(names)):
-#     batch = template.loc[(template['Type']) == names[i]]  # access the data with this Type
-#     x = batch['Total']
-#     x = x.iloc[0]
-#     percent = x / gt
-#     percents = pd.DataFrame({"Type": names[i], "Percent": percent}, index = [0]).dropna()
-#     template2 = pd.concat([template2, percents])
-# print(template2)
-#
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+projected_savings = income + investments + total_outgoing
+print(projected_savings)
+print()
+print(income)
+print(investments)
+print(total_outgoing)
 
