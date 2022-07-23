@@ -106,3 +106,90 @@ def monthly_sums(x_values, y_values):
             #     permarray_y.append(-999)
 
     return permarray_x, permarray_y
+
+"""
+# The following function should determine monthly averages for a dataset.
+# It will output these monthly averages along with a decimal date being the first decimal of that month.
+"""
+
+
+def monthly_averages(x_values, y_values):
+    x_values = np.array(x_values)
+    y_values = np.array(y_values)
+
+    Begin = 0
+    Jan = 31
+    Feb = 28 + 31
+    Mar = 31 + 31 + 28
+    Apr = 30 + 31 + 28 + 31
+    May = 31 + 31 + 28 + 31 + 30
+    June = 30 + 31 + 28 + 31 + 30 + 31
+    July = 31 + 31 + 28 + 31 + 30 + 31 + 30
+    August = 31 + 31 + 28 + 31 + 30 + 31 + 30 + 31
+    Sep = 30 + 31 + 28 + 31 + 30 + 31 + 30 + 31 + 31
+    Oct = 31 + 31 + 28 + 31 + 30 + 31 + 30 + 31 + 31 + 30
+    Nov = 30 + 31 + 28 + 31 + 30 + 31 + 30 + 31 + 31 + 30 + 30
+    Dec = 31 + 31 + 28 + 31 + 30 + 31 + 30 + 31 + 31 + 30 + 30 + 30
+    months = np.array([Begin, Jan, Feb, Mar, Apr, May, June, July, August, Sep, Oct, Nov, Dec])
+    months = months / 365
+
+    # first, enter the available years on file:
+    lin1 = np.linspace(int(min(x_values)),
+                       int(max(x_values)),
+                       (int(max(x_values)) - int(min(x_values)) + 1))
+
+    # initialize some vars
+    mean_of_date = 0
+    mean_of_y = 0
+
+    permarray_x = []
+    permarray_y = []
+
+    for i in range(0, len(lin1)):  # loop in the years
+        year = int(lin1[i])  # grab only the integer parts of the years in the data
+
+        for j in range(0, len(months)):  # loop in the months
+
+            temparray_x = []
+            temparray_y = []
+
+            # print('The current month is ' + str(months[j]) + 'in year ' + str(year))
+            months_min = months[j]
+            # TODO fix this line of code to filter between one month and the next more accurately
+            months_max = months_min + 0.08
+
+            for k in range(0, len(y_values)):  # grab the data i want to use
+                y_current = y_values[k]
+                x_current = x_values[k]
+
+                x_decimal_only = x_current - int(x_current)
+                x_int = int(x_current)
+                # if my data exists in the time frame I'm currently searching through,
+                if (x_int == year) and (x_decimal_only >= months_min) and (x_decimal_only < months_max):
+                    # append that x and y data to initialized arrays
+                    temparray_x.append(x_int + months_min)
+                    temparray_y.append(y_current)
+
+
+            # if at the end of the month, the length of the temporary arrays are non-zero,
+            # clean and append that information to a permanent array
+            if len(temparray_x) != 0:
+                tempsum = sum(temparray_x)
+                tempmean = tempsum / len(temparray_x)  # this works fine because it averages the same # repeatedly
+
+                tempsum2 = sum(temparray_y)
+                tempmean2 = tempsum2 / len(temparray_y)
+
+
+
+                permarray_x.append(tempmean)
+                permarray_y.append(tempmean2)
+
+                # print(permarray_x)
+                # print(permarray_y)
+
+            # else:
+            #     permarray_x.append(x_int + months_min)
+            #     permarray_y.append(-999)
+
+    return permarray_x, permarray_y,

@@ -142,7 +142,7 @@ anz = anz.drop(columns=['Processed Date','Type','Details',
 anz = anz.rename(columns={"Balance": "Running Bal.", "Transaction Date": "Long Date"})
 
 anz['Origin'] = 'ANZ'
-# todo check data lenght so we're not missing anything
+# todo check data length so we're not missing anything
 combine = pd.concat([sc_sav, sc_check, sc_credit, cbl_credit, cbl_checking, cbl_sav, anz]).reset_index(drop=True)
 combine = combine.drop(columns=['Unnamed: 8'])
 combine['Merge_Index'] = np.linspace(0, len(combine)-1, len(combine))

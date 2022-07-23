@@ -2,110 +2,13 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from PyAstronomy import pyasl
+import seaborn as sns
+from finance_functions import long_date_to_decimal_date, monthly_averages, monthly_sums
 
-""""
-"long_date_to_decimal_date" function takes dates in the form of dd/mm/yyyy and converts them to a decimal.
-This was required for the heidelberg cape grim dataset, and is quite useful overall while date formatting can be in
-so many different forms.
-Arguments:
-x = column of dates in the form dd/mm/yyyy
-Outputs:
-array = column of dates in the form yyyy.decimal
-To see an example, uncomment the following lines of code directly below the function definition:
-"""
-
-
-def long_date_to_decimal_date(x):
-    array = []  # define an empty array in which the data will be stored
-    for i in range(0, len(x)):  # initialize the for loop to run the length of our dataset (x)
-        j = x[i]  # assign j: grab the i'th value from our dataset (x)
-        decy = pyasl.decimalYear(j)  # The heavy lifting is done via this Py-astronomy package
-        decy = float(decy)  # change to a float - this may be required for appending data to the array
-        array.append(decy)  # append it all together into a useful column of data
-    return array  # return the new data
-
-
-
-def monthly_sums(x_values, y_values):
-    x_values = np.array(x_values)
-    y_values = np.array(y_values)
-
-    Begin = 0
-    Jan = 31
-    Feb = 28 + 31
-    Mar = 31 + 31 + 28
-    Apr = 30 + 31 + 28 + 31
-    May = 31 + 31 + 28 + 31 + 30
-    June = 30 + 31 + 28 + 31 + 30 + 31
-    July = 31 + 31 + 28 + 31 + 30 + 31 + 30
-    August = 31 + 31 + 28 + 31 + 30 + 31 + 30 + 31
-    Sep = 30 + 31 + 28 + 31 + 30 + 31 + 30 + 31 + 31
-    Oct = 31 + 31 + 28 + 31 + 30 + 31 + 30 + 31 + 31 + 30
-    Nov = 30 + 31 + 28 + 31 + 30 + 31 + 30 + 31 + 31 + 30 + 30
-    Dec = 31 + 31 + 28 + 31 + 30 + 31 + 30 + 31 + 31 + 30 + 30 + 30
-    months = np.array([Begin, Jan, Feb, Mar, Apr, May, June, July, August, Sep, Oct, Nov, Dec])
-    months = months / 365
-
-    # first, enter the available years on file:
-    lin1 = np.linspace(int(min(x_values)),
-                       int(max(x_values)),
-                       (int(max(x_values)) - int(min(x_values)) + 1))
-
-    # initialize some vars
-    mean_of_date = 0
-    mean_of_y = 0
-
-    permarray_x = []
-    permarray_y = []
-
-    for i in range(0, len(lin1)):  # loop in the years
-        year = int(lin1[i])  # grab only the integer parts of the years in the data
-
-        for j in range(0, len(months)):  # loop in the months
-
-            temparray_x = []
-            temparray_y = []
-
-            # print('The current month is ' + str(months[j]) + 'in year ' + str(year))
-            months_min = months[j]
-            # TODO fix this line of code to filter between one month and the next more accurately
-            months_max = months_min + 0.08
-
-            for k in range(0, len(y_values)):  # grab the data i want to use
-                y_current = y_values[k]
-                x_current = x_values[k]
-
-                x_decimal_only = x_current - int(x_current)
-                x_int = int(x_current)
-                # if my data exists in the time frame I'm currently searching through,
-                if (x_int == year) and (x_decimal_only >= months_min) and (x_decimal_only < months_max):
-                    # append that x and y data to initialized arrays
-                    temparray_x.append(x_int + months_min)
-                    temparray_y.append(y_current)
-
-
-            # if at the end of the month, the length of the temporary arrays are non-zero,
-            # clean and append that information to a permanent array
-            if len(temparray_x) != 0:
-                tempsum = sum(temparray_x)
-                tempmean = tempsum / len(temparray_x)  # this works fine because it sums the same # repeatedly
-
-                tempsum2 = sum(temparray_y)
-                tempmean2 = tempsum2 / len(temparray_y)
-
-
-
-                permarray_x.append(tempmean)
-                permarray_y.append(tempsum2)
-
-                # print(permarray_x)
-                # print(permarray_y)
-
-            # else:
-            #     permarray_x.append(x_int + months_min)
-            #     permarray_y.append(-999)
-
-    return permarray_x, permarray_y
+size1 = 5
+colors = sns.color_palette("rocket", 6)
+colors2 = sns.color_palette("mako", 6)
+seshadri = ['#c3121e', '#0348a1', '#ffb01c', '#027608', '#0193b0', '#9c5300', '#949c01', '#7104b5']
 
 """
 The file I'm reading in was mostly processed in the Preprocessing file but a little bit by hand at the end
@@ -139,30 +42,51 @@ total_outgoing = np.sum(df['Amount'])
 
 types = np.unique(df['Type'])
 monthly_summaries = pd.DataFrame()
-
+sums_array = []
 percents = []
 for i in range(0, len(types)):
+    # Data for the WHOLE YEAR
     category = df.loc[(df['Type']) == types[i]]                        # index by category
-    percent_of_total = (np.sum(category['Amount'])) / total_outgoing   # find the sum of all transactions in that cat
+    sums = (np.sum(category['Amount']))
+    percent_of_total = ((np.sum(category['Amount'])) / total_outgoing) * 100   # find the sum of all transactions in that cat
     if percent_of_total < 0:                                           # flag if it's positive (income)
         print(types[i])
         print(percent_of_total)
     percents.append(percent_of_total)                                  # append to an array for later
+    sums_array.append(sums)                                            # append to an array for later
 
+    # Data for MONTH TO MONTH
     month_sum = monthly_sums(category['Decimal_date'], category['Amount'])  # find the monthly sum from X month.
     x = month_sum[0]  # date                                          # extract the date back out
     y = month_sum[1]  # sum                                           # extract the sum back out.
     summary = pd.DataFrame({"Date": x, "sum": y, "Type": types[i]}).dropna()
     monthly_summaries = pd.concat([monthly_summaries, summary])
 
+summary2 = pd.DataFrame({"Type": types, "Sum": sums_array, "Percents": percents}).dropna()
 
-# Pie chart, where the slices will be ordered and plotted counter-clockwise:
-""""""
-fig1, ax1 = plt.subplots()
-ax1.pie(percents, labels=types, autopct='%1.1f%%',
-        shadow=True, startangle=90)
-ax1.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
-plt.show()
+
+# https://matplotlib.org/3.1.0/gallery/pie_and_polar_charts/pie_and_donut_labels.html
+fig, ax = plt.subplots(figsize=(16, 8), subplot_kw=dict(aspect="equal"))
+
+wedges, texts = ax.pie(percents, wedgeprops=dict(width=0.5), startangle=-40)
+
+bbox_props = dict(boxstyle="square,pad=0.3", fc="w", ec="k", lw=0.72)
+kw = dict(arrowprops=dict(arrowstyle="-"),
+          bbox=bbox_props, zorder=0, va="center")
+
+for i, p in enumerate(wedges):
+    ang = (p.theta2 - p.theta1)/2. + p.theta1
+    y = np.sin(np.deg2rad(ang))
+    x = np.cos(np.deg2rad(ang))
+    horizontalalignment = {-1: "right", 1: "left"}[int(np.sign(x))]
+    connectionstyle = "angle,angleA=0,angleB={}".format(ang)
+    kw["arrowprops"].update({"connectionstyle": connectionstyle})
+    ax.annotate(types[i], xy=(x, y), xytext=(1.35*np.sign(x), 1.4*y),
+                horizontalalignment=horizontalalignment, **kw)
+
+plt.savefig('pie.png',
+            dpi=300, bbox_inches="tight")
+plt.close()
 
 """
 Now that I've gotten a broad idea of our spending overall, 
@@ -172,24 +96,59 @@ I'm going to define our savings as:
 
 Savings = Incoming - outgoing - investments. 
 Savings = Income - (all transactions) - investments [ leaving out the same categories above that are confusing]
-"""
 
+I'm reading the file back in because I removed these columns from the DataFrame before
+"""
 df = pd.read_excel(r'C:\Users\lewis\venv\python310\python-masterclass-remaster-shared\finances\combined_edited.xlsx')
 df_adjusted = df.loc[(df['Type'] != 'Paying Off Credit Cards') &
-             (df['Type'] != 'IntraTransfer') & (df['Type'] != 'Income') & (df['Type'] != 'Investments')]
+             (df['Type'] != 'IntraTransfer') &
+             (df['Type'] != 'Income') &
+             (df['Type'] != 'Investments') &
+             (df['Type'] != 'Car')]
 
 income = df.loc[(df['Type']) == 'Income']
-income = np.sum(income['Amount'])
-
 investments = df.loc[(df['Type']) == 'Investments']
+car = df.loc[(df['Type']) == 'Car']
+
+income = np.sum(income['Amount'])
 investments = np.sum(investments['Amount'])
+car = np.sum(car['Amount'])
 
 total_outgoing = np.sum(df_adjusted['Amount'])  # all outgoing real transactions
 
-projected_savings = income + investments + total_outgoing
-print(projected_savings)
-print()
-print(income)
-print(investments)
-print(total_outgoing)
+proj_sav = income + total_outgoing
+print(proj_sav)
+
+"""
+Now I want to calculate our ACTUAL SAVINGS.
+
+THis is the sum of our accounts THEN - our accounts NOW. 
+"""
+
+df = pd.read_excel(r'C:\Users\lewis\venv\python310\python-masterclass-remaster-shared\finances\combined_edited.xlsx')
+cbl_sav = df.loc[(df['Origin'] == 'CBL Savings')]
+cbl_check = df.loc[(df['Origin'] == 'CBL Checking')]
+sc_sav = df.loc[(df['Origin'] == 'SC Savings')]
+sc_check = df.loc[(df['Origin'] == 'SC Checking')]
+anz = df.loc[(df['Origin'] == 'ANZ')]
+plt.scatter(cbl_sav['Decimal_date'], cbl_sav['Running Bal.'], color = colors2[1], label = 'CBL Savings', marker = 'D')
+plt.scatter(cbl_check['Decimal_date'], cbl_check['Running Bal.'], color = colors2[2], label = 'CBL Checking', marker = '^')
+plt.scatter(sc_sav['Decimal_date'],sc_sav['Running Bal.'], color = colors2[3], label = 'SC Savings', marker = 'o')
+plt.scatter(sc_check['Decimal_date'], sc_check['Running Bal.'], color = colors2[4], label = 'SC Checking', marker = 'X')
+plt.scatter(anz['Decimal_date'], anz['Running Bal.'], color = colors2[5], label = 'SC Checking', marker = '*')
+plt.axvline(x = 2021.99, color = 'black', alpha = 0.2, linestyle = 'solid')
+plt.axvline(x = 2022.04, color = 'black', alpha = 0.2, linestyle = 'solid') # BRazil
+
+plt.axvline(x = 2021.44, color = 'black', alpha = 0.2, linestyle = 'solid')
+plt.axvline(x = 2021.47, color = 'black', alpha = 0.2, linestyle = 'solid') # NYC
+plt.axvline(x = 2022.40, color = 'black', alpha = 0.2, linestyle = 'solid')
+plt.axvline(x = 2022.42, color = 'black', alpha = 0.2, linestyle = 'solid') # car
+plt.legend()
+plt.xlabel('Date', fontsize=14)
+plt.ylabel('$ USD', fontsize=14)  # label the y axis
+
+
+plt.savefig('scatter.png',
+            dpi=300, bbox_inches="tight")
+plt.close()
 
