@@ -163,7 +163,6 @@ def executeList():
     df = pd.read_excel(r'C:\Users\lewis\venv\python310\python-masterclass-remaster-shared\finances\recipebook.xlsx')
     # print(df)
     recipes = (np.unique(df['Recipe Title']))  # grab each unique recipe from the recipe book and print it so the
-    print(recipes)
     x = pd.DataFrame()
     for i in range(0, len(recipes)):
         item = recipes[i]
@@ -231,45 +230,40 @@ def executeList():
             df_new = df.loc[(df['Recipe Title'] == item)]  # take the first input from the user, and find where in the
             x = pd.concat([x, df_new])  # then add it to the DataFrame that we're building for the grocery list
 
-    x['Duplicate_search'] = x.duplicated(subset='Ingredient',
-                                         keep=False)  # This function identifies duplicates, by adding a new column and setting all dups to True.
-    # by setting keep = False, all dups are True
-    x = x.sort_values(by='Ingredient')
-    x.to_excel('step1.xlsx')
+    x['Duplicate_search'] = x.duplicated(subset='Ingredient', keep=False)  # This function identifies duplicates, by adding a new column and setting all dups to True.
 
-    nondups = x.loc[(x['Duplicate_search'] == False)]  # locate a list of all NON duplicates, and save for later use
-    dups = x.loc[(x['Duplicate_search'] == True)]  # locate a lost of ALL duplicates, to work with now
-    dups = np.unique(dups['Ingredient'])  # Create a list of all the unique ingredients that are duplicated
-    print(dups)
-    for item in dups:  # iterate through the list of duplicates
-        current_ingredient = x.loc[(x['Ingredient'] == item)]  # search the ENTIRE grocery list for all instances of the iterable item
+    duplicates = x.loc[(x['Duplicate_search'] == True)]  # dump all the duplicates into one DataFrame
+    duplicates_list = np.unique(duplicates['Ingredient'])  # extract a list of all the duplicate ingredients
+    print(duplicates_list)
+    print(len(duplicates_list))
+    array1 = []
+    array2 = []
+    type_new = []
+    for i in range(0, len(duplicates_list)):
+        current = duplicates_list[i]          # focus on the first duplicate of all of the duplicates
+        current = duplicates.loc[(duplicates['Ingredient'] == current)]  # extract a quick mini dataFrame of only the current ingredient
+        string1 = ""
+        string2 = ""
+        for k in range(0, len(current)):
+            row = current.iloc[k]             # access the first row of the mini-dataframe for the first duplicate
+            string1 = string1 + str(row['Recipe Title']) + str('_') + str('+') + str('_')         # create a longer string of all the recipes where its used
+            string2 = string2 + str(row['Quantity']) + str('_')+ str(row['Unit of Measure']) + str('_') + str('+') + str('_') # create a longer string of the different quntities required
 
-        if len(np.unique(current_ingredient['Unit of Measure'])) == 1:  # if there is only one type of unit measure,
-            sum_of_ingredients = np.sum(current_ingredient['Quantity'])  # add the quantities together
-            current_ingredient['Quantity'] = sum_of_ingredients  # change the "quantity" to the sum:
-            #       # currently, there will be dups on the main sheet, but they'll all have the total quantity, and I'll just drop the dups later
-            #
-            for_tildas = np.unique(current_ingredient['Recipe Title'])     # this next block of code will string all the recipes together that call for the duplicate items
-            strings = ""                                                # so that the user can see at a glance when looking at the grocery list
-            for k in range(0, len(for_tildas)):
-                name = for_tildas[k]
-                strings = strings + str(name) + str("\u007e")
-            current_ingredient['Recipe Title'] = strings
-            nondups = pd.concat([nondups, current_ingredient])          # concat this duplicated ingredient onto the list of nondups
-        #
-        elif len(np.unique(current_ingredient['Unit of Measure'])) != 1:  # if theres duplicates that aren't the same unit of measure
-            nondups = pd.concat([nondups, current_ingredient])          # make sure that's back on the main list as well.
+        array1.append(string1)
+        array2.append(string2)
+        type_new.append(row['Type'])
+    print(len(array1))
+    print(len(array2))
+    print(len(type_new))
+    cleaned_data = pd.DataFrame({"Recipe Title": array1, "Ingredient": duplicates_list, "Type": type_new, "Quantity": array2 })
+    cleaned_data.to_excel('cleaned.xlsx')
 
-    nondups.to_excel('step2.xlsx')
-    """
-    Now, at this point, we're just trying to get a grocery list, so I'm going to drop the recipe title, and then
-    drop the duplicates.
-    """
-    nondups = nondups[['Ingredient', 'Quantity', 'Unit of Measure', 'Recipe Title']].reset_index(drop=True)
-    nondups['Dups to Drop'] = nondups.duplicated()
-    final_list = nondups.loc[(nondups[
-                                  'Dups to Drop'] == False)]  # grab only the items that the above function sets to false. (All duplicates are set to true, so keep all the false ones)
-    final_list.to_excel('recipetest.xlsx')
+    others = x.loc[(x['Duplicate_search'] == False)]  # all the ones where the original dup search was false.
+    final_list = pd.concat([cleaned_data, others])
+    final_list = final_list[['Ingredient','Quantity','Unit of Measure','Type','Recipe Title']]
+    final_list = final_list.sort_values(by='Type', ascending = False).reset_index(drop=True)
+    final_list.to_excel('testing12.xlsx')
+
 
 
 myButton = Button(root, text="Execute list creation", command=executeList, fg='blue')
