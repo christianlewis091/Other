@@ -1,0 +1,12 @@
+Quick guide for creating fast LaTeX document with combination of Tex file in Windows and WSL / UBUNTU:
+
+
+1. Insert the following command to find this this folder in Ubuntu terminal
+
+cd /mnt/c/Users/lewis/venv/python310/python-masterclass-remaster-shared/personal_projects/01_anz_calculator/01_05_texfiles
+
+2. use the following command to compile pdf. 
+
+pdflatex fileame.tex
+
+

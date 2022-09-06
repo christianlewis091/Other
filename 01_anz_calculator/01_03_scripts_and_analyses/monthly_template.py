@@ -105,10 +105,10 @@ for i in range(0, len(types)):
 
 summary2 = pd.DataFrame({"Type": types, "Sum": sums_array, "Percents": percents}).dropna()
 
-writer = pd.ExcelWriter(r'G:/My Drive/Money/BudgetAnalysis/python_output_files/{}_Results.xlsx'.format(name), engine='openpyxl')
-anz.to_excel(writer, sheet_name='Categorized Transactions')
-summary2.to_excel(writer, sheet_name='Spending Summary')
-writer.save()
+with pd.ExcelWriter(r'C:/Users/lewis/venv/python310/python-masterclass-remaster-shared/personal_projects/01_anz_calculator/01_04_output_data/{}_Results.xlsx'.format(name)) as writer:
+    anz.to_excel(writer, sheet_name='Categorized Transactions', index=False)
+    summary2.to_excel(writer, sheet_name='Spending Summary', index=False)
+
 
 
 # https://matplotlib.org/3.1.0/gallery/pie_and_polar_charts/pie_and_donut_labels.html
