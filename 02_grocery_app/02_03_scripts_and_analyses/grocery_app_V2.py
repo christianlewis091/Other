@@ -9,8 +9,8 @@ from PIL import Image, ImageTk
 df = pd.read_excel(
     r'C:\Users\lewis\venv\python310\python-masterclass-remaster-shared\personal_projects\02_grocery_app\02_02_prepared_data\recipebook.xlsx')
 # get a list of all the recipes in the database for the "Database click"
-recipes = (np.unique(df['Recipe Title']))  # grab each unique recipe from the recipe book and print it so the
-recipes = pd.DataFrame({"Recipe": recipes})
+recipes_un = (np.unique(df['Recipe Title']))  # grab each unique recipe from the recipe book and print it so the
+recipes = pd.DataFrame({"Recipe": recipes_un})
 recipe_list = recipes.sort_values(by='Recipe')
 
 """
@@ -78,7 +78,7 @@ def updating():
         recipes_summary.to_excel(writer, sheet_name='SummaryList', index=False)
 
 
-myButton = Button(root, text="Click here to update the summary list", command=updating, fg='blue')
+myButton = Button(root, text="Click here to update the summary list (File must be closed!)", command=updating, fg='blue')
 myButton.grid(row=30, rowspan=7, column=0, columnspan=5)
 
 
@@ -202,13 +202,21 @@ def listcreation():
         value21 = str(e21.get())
 
         pd.options.mode.chained_assignment = None  # this supresses an annoying error
-        df = pd.read_excel(
-            r'C:\Users\lewis\venv\python310\python-masterclass-remaster-shared\personal_projects\02_grocery_app\02_02_prepared_data\recipebook.xlsx')
-        # print(df)
-        recipes = (np.unique(df['Recipe Title']))  # grab each unique recipe from the recipe book and print it so the
+        # df = pd.read_excel(r'C:\Users\lewis\venv\python310\python-masterclass-remaster-shared\personal_projects\02_grocery_app\02_02_prepared_data\recipebook.xlsx')
+        # recipes = (np.unique(df['Recipe Title']))  # grab each unique recipe from the recipe book and print it so the
+        """
+        The following block of code does the following: 
+        Loop through each unique recipe in the list, based on the unique list created above (see "recipes_un", "un" for unique")
+        For each of the unique recipe names, find if any of the entries in "value1-value21", for each meal of the week, matches 
+        any of the recipes. 
+        Once a match is found, this recipe's ingredients will be tacked onto the initialized dataframe, called 'x', and therefore
+        will build up a database. 
+        Since there are 21 meals in which we can input choices, its possible to put the same recipe in all boxes, in this case, 
+        it will invoke the duplicates region of the code later. 
+        """
         x = pd.DataFrame()
-        for i in range(0, len(recipes)):
-            item = recipes[i]
+        for i in range(0, len(recipes_un)):  # for the length of the range of the unique recipe names:
+            item = recipes[i]                # grab the first recipe of the unique list...
             if value1 == item:  # if the input is equal to a specific item,
                 df_new = df.loc[(df['Recipe Title'] == item)]  # take the first input from the user, and find where in the
                 x = pd.concat([x, df_new])  # then add it to the DataFrame that we're building for the grocery list
@@ -273,20 +281,18 @@ def listcreation():
                 df_new = df.loc[(df['Recipe Title'] == item)]  # take the first input from the user, and find where in the
                 x = pd.concat([x, df_new])  # then add it to the DataFrame that we're building for the grocery list
 
-        x['Duplicate_search'] = x.duplicated(subset='Ingredient',
-                                             keep=False)  # This function identifies duplicates, by adding a new column and setting all dups to True.
+        x['Duplicate_search'] = x.duplicated(subset='Ingredient', keep=False)  # This function identifies duplicates, by adding a new column and setting all dups to True.
 
-        duplicates = x.loc[(x['Duplicate_search'] == True)]  # dump all the duplicates into one DataFrame
+        duplicates = x.loc[(x['Duplicate_search'] == True)]  # dump all the duplicates into one DataFrame (here, there are still multiples of the same things in the dataframe)
         duplicates_list = np.unique(duplicates['Ingredient'])  # extract a list of all the duplicate ingredients
-        print(duplicates_list)
-        print(len(duplicates_list))
+        # print(duplicates_list)
+        # print(len(duplicates_list))
         array1 = []
         array2 = []
         type_new = []
         for i in range(0, len(duplicates_list)):
             current = duplicates_list[i]  # focus on the first duplicate of all of the duplicates
-            current = duplicates.loc[
-                (duplicates['Ingredient'] == current)]  # extract a quick mini dataFrame of only the current ingredient
+            current = duplicates.loc[(duplicates['Ingredient'] == current)]  # extract a quick mini dataFrame of only the current ingredient
             string1 = ""
             string2 = ""
             for k in range(0, len(current)):
@@ -313,6 +319,7 @@ def listcreation():
         final_list.to_excel(
             r'C:/Users/lewis/venv/python310/python-masterclass-remaster-shared/personal_projects'
             r'/02_grocery_app/02_04_output_data/list.xlsx')
+
 
     myButton = Button(top, text="Execute list creation", command=executeList, fg='blue')
     myButton.grid(row=30, rowspan=7, column=0, columnspan=5)
