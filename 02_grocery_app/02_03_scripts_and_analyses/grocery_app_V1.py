@@ -297,7 +297,6 @@ def executeList():
     final_list = pd.concat([cleaned_data, others])
     final_list = final_list[['Ingredient', 'Quantity', 'Unit of Measure', 'Type', 'Recipe Title']]
     final_list = final_list.sort_values(by='Type', ascending=False).reset_index(drop=True)
-    # final_list.to_excel('testing12.xlsx')
     final_list.to_excel(
         r'C:/Users/lewis/venv/python310/python-masterclass-remaster-shared/personal_projects'
         r'/02_grocery_app/02_04_output_data/list.xlsx')
