@@ -11,6 +11,9 @@ recipes = (np.unique(df['Recipe Title']))  # grab each unique recipe from the re
 recipes = pd.DataFrame({"Recipe": recipes})
 recipes = recipes.sort_values(by='Recipe')
 
+"""
+Initialize the widget
+"""
 root = Tk()
 # root['bg'] = '#ffbf00'
 # root.geometry("700x500")
@@ -18,9 +21,12 @@ hello_message = Label(root, text=
 "Hello! Welcome to the grocery list generator")
 hello_message.grid(row=0, rowspan=2, column=0, columnspan=5)
 img1 = ImageTk.PhotoImage(Image.open("snoopy.png"))
-label_image = Label(root, image = img1)
-label_image.grid(row = 10, column=0)
+label_image = Label(root, image=img1)
+label_image.grid(row=10, column=0)
 
+"""
+Create Labels and Tell them where to live
+"""
 mon = Label(root, text="M")
 tues = Label(root, text="Tu")
 wed = Label(root, text="W")
@@ -31,7 +37,6 @@ sun = Label(root, text="Sun")
 breakfast = Label(root, text="Breakfast")
 lunch = Label(root, text="Lunch")
 dinner = Label(root, text="Dinner")
-
 mon.grid(row=1, column=6)
 tues.grid(row=2, column=6)
 wed.grid(row=3, column=6)
@@ -43,7 +48,17 @@ breakfast.grid(row=0, column=7)
 lunch.grid(row=0, column=8)
 dinner.grid(row=0, column=9)
 
-values = ['all'] + list(recipes['Recipe'].unique())
+"""
+This next annoyingly long block of code creates 21 new variables (7 days of the week, 3 meals
+per day).
+The sequence of three lines does as follows:
+e1 = StringVar()                              # INITIALIZE A VARIABLE
+e1_entry = ttk.OptionMenu(root, e1, *values)  # INITIALIZE A DROPDOWN LIST OF ALL ITEMS IN "VALUES"
+e1_entry.grid(row=1, column=7)                # TELL THE BOX WHERE TO LIVE
+"""
+
+values = ['all'] + list(recipes['Recipe'].unique())  # CREATES THE ITEMS IN DROPDOWN LIST
+
 e1 = StringVar()
 e1_entry = ttk.OptionMenu(root, e1, *values)
 e1_entry.grid(row=1, column=7)
@@ -138,9 +153,19 @@ myButton = Button(root, text="Click here to see available recipes", command=myCl
 myButton.grid(row=2, rowspan=5, column=0, columnspan=5)
 
 
+
+"""
+This is where the main functionality of the widget lives. 
+Ideally, I would like to have this in another section / another .py file, 
+but you end up doing circular imports, so we'll just leave it here...
+"""
 def executeList():
-    myLabel2 = Label(root, text="List has been created...I think")
+    myLabel2 = Label(root, text="List has been created.")
     myLabel2.grid(row=10, column=6, columnspan=5)
+    """
+    The next block of code grabs all of the inputs from all of the dropdown
+    boxes that we created before
+    """
     value1 = str(e1.get())
     value2 = str(e2.get())
     value3 = str(e3.get())
@@ -164,7 +189,8 @@ def executeList():
     value21 = str(e21.get())
 
     pd.options.mode.chained_assignment = None  # this supresses an annoying error
-    df = pd.read_excel(r'C:\Users\lewis\venv\python310\python-masterclass-remaster-shared\finances\recipebook.xlsx')
+    df = pd.read_excel(
+        r'C:\Users\lewis\venv\python310\python-masterclass-remaster-shared\personal_projects\02_grocery_app\02_02_prepared_data\recipebook.xlsx')
     # print(df)
     recipes = (np.unique(df['Recipe Title']))  # grab each unique recipe from the recipe book and print it so the
     x = pd.DataFrame()
@@ -234,7 +260,8 @@ def executeList():
             df_new = df.loc[(df['Recipe Title'] == item)]  # take the first input from the user, and find where in the
             x = pd.concat([x, df_new])  # then add it to the DataFrame that we're building for the grocery list
 
-    x['Duplicate_search'] = x.duplicated(subset='Ingredient', keep=False)  # This function identifies duplicates, by adding a new column and setting all dups to True.
+    x['Duplicate_search'] = x.duplicated(subset='Ingredient',
+                                         keep=False)  # This function identifies duplicates, by adding a new column and setting all dups to True.
 
     duplicates = x.loc[(x['Duplicate_search'] == True)]  # dump all the duplicates into one DataFrame
     duplicates_list = np.unique(duplicates['Ingredient'])  # extract a list of all the duplicate ingredients
@@ -244,14 +271,17 @@ def executeList():
     array2 = []
     type_new = []
     for i in range(0, len(duplicates_list)):
-        current = duplicates_list[i]          # focus on the first duplicate of all of the duplicates
-        current = duplicates.loc[(duplicates['Ingredient'] == current)]  # extract a quick mini dataFrame of only the current ingredient
+        current = duplicates_list[i]  # focus on the first duplicate of all of the duplicates
+        current = duplicates.loc[
+            (duplicates['Ingredient'] == current)]  # extract a quick mini dataFrame of only the current ingredient
         string1 = ""
         string2 = ""
         for k in range(0, len(current)):
-            row = current.iloc[k]             # access the first row of the mini-dataframe for the first duplicate
-            string1 = string1 + str(row['Recipe Title']) + str('_') + str('+') + str('_')         # create a longer string of all the recipes where its used
-            string2 = string2 + str(row['Quantity']) + str('_')+ str(row['Unit of Measure']) + str('_') + str('+') + str('_') # create a longer string of the different quntities required
+            row = current.iloc[k]  # access the first row of the mini-dataframe for the first duplicate
+            string1 = string1 + str(row['Recipe Title']) + str('_') + str('+') + str(
+                '_')  # create a longer string of all the recipes where its used
+            string2 = string2 + str(row['Quantity']) + str('_') + str(row['Unit of Measure']) + str('_') + str(
+                '+') + str('_')  # create a longer string of the different quntities required
 
         array1.append(string1)
         array2.append(string2)
@@ -259,15 +289,18 @@ def executeList():
     print(len(array1))
     print(len(array2))
     print(len(type_new))
-    cleaned_data = pd.DataFrame({"Recipe Title": array1, "Ingredient": duplicates_list, "Type": type_new, "Quantity": array2 })
-    cleaned_data.to_excel('cleaned.xlsx')
+    cleaned_data = pd.DataFrame(
+        {"Recipe Title": array1, "Ingredient": duplicates_list, "Type": type_new, "Quantity": array2})
+    # cleaned_data.to_excel('cleaned.xlsx')
 
     others = x.loc[(x['Duplicate_search'] == False)]  # all the ones where the original dup search was false.
     final_list = pd.concat([cleaned_data, others])
-    final_list = final_list[['Ingredient','Quantity','Unit of Measure','Type','Recipe Title']]
-    final_list = final_list.sort_values(by='Type', ascending = False).reset_index(drop=True)
-    final_list.to_excel('testing12.xlsx')
-
+    final_list = final_list[['Ingredient', 'Quantity', 'Unit of Measure', 'Type', 'Recipe Title']]
+    final_list = final_list.sort_values(by='Type', ascending=False).reset_index(drop=True)
+    # final_list.to_excel('testing12.xlsx')
+    final_list.to_excel(
+        r'C:/Users/lewis/venv/python310/python-masterclass-remaster-shared/personal_projects'
+        r'/02_grocery_app/02_04_output_data/list.xlsx')
 
 
 myButton = Button(root, text="Execute list creation", command=executeList, fg='blue')
