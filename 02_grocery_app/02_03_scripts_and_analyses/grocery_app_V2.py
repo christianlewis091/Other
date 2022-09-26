@@ -7,7 +7,7 @@ import numpy as np
 from PIL import Image, ImageTk
 
 df = pd.read_excel(
-    r'C:\Users\lewis\venv\python310\python-masterclass-remaster-shared\personal_projects\02_grocery_app\02_02_prepared_data\recipebook.xlsx')
+    r'C:\Users\lewis\venv\python310\python-masterclass-remaster-shared\personal_projects\02_grocery_app\02_02_prepared_data\recipebook2.xlsx')
 # get a list of all the recipes in the database for the "Database click"
 recipes_un = (np.unique(df['Recipe Title']))  # grab each unique recipe from the recipe book and print it so the
 recipes = pd.DataFrame({"Recipe": recipes_un})
@@ -73,7 +73,7 @@ def updating():
     df_dessert = pd.DataFrame({"Dessert": df_dessert})
     recipes_summary = pd.concat([df_bfast, df_lunch, df_dinner, df_dessert], axis=1, join="outer")
     with pd.ExcelWriter(
-            r'C:/Users/lewis/venv/python310/python-masterclass-remaster-shared/personal_projects/02_grocery_app/02_02_prepared_data/recipebook.xlsx') as writer:
+            r'C:/Users/lewis/venv/python310/python-masterclass-remaster-shared/personal_projects/02_grocery_app/02_02_prepared_data/recipebook2.xlsx') as writer:
         df.to_excel(writer, sheet_name='Database', index=False)
         recipes_summary.to_excel(writer, sheet_name='SummaryList', index=False)
 
@@ -216,7 +216,7 @@ def listcreation():
         """
         x = pd.DataFrame()
         for i in range(0, len(recipes_un)):  # for the length of the range of the unique recipe names:
-            item = recipes[i]                # grab the first recipe of the unique list...
+            item = recipes_un[i]                # grab the first recipe of the unique list...
             if value1 == item:  # if the input is equal to a specific item,
                 df_new = df.loc[(df['Recipe Title'] == item)]  # take the first input from the user, and find where in the
                 x = pd.concat([x, df_new])  # then add it to the DataFrame that we're building for the grocery list
@@ -282,32 +282,24 @@ def listcreation():
                 x = pd.concat([x, df_new])  # then add it to the DataFrame that we're building for the grocery list
 
         x['Duplicate_search'] = x.duplicated(subset='Ingredient', keep=False)  # This function identifies duplicates, by adding a new column and setting all dups to True.
-
-        duplicates = x.loc[(x['Duplicate_search'] == True)]  # dump all the duplicates into one DataFrame (here, there are still multiples of the same things in the dataframe)
-        duplicates_list = np.unique(duplicates['Ingredient'])  # extract a list of all the duplicate ingredients
-        # print(duplicates_list)
-        # print(len(duplicates_list))
+        duplicates = x.loc[(x['Duplicate_search'] == True)]                    # dump all the duplicates into one DataFrame (here, there are still multiples of the same things in the dataframe)
+        duplicates_list = np.unique(duplicates['Ingredient'])                  # extract a list of all the duplicate ingredients
         array1 = []
         array2 = []
         type_new = []
         for i in range(0, len(duplicates_list)):
-            current = duplicates_list[i]  # focus on the first duplicate of all of the duplicates
+            current = duplicates_list[i]                                     # focus on the first duplicate of all of the duplicates
             current = duplicates.loc[(duplicates['Ingredient'] == current)]  # extract a quick mini dataFrame of only the current ingredient
+            quant = np.sum(current['Quantity'])
+            array2.append(quant)
             string1 = ""
             string2 = ""
             for k in range(0, len(current)):
                 row = current.iloc[k]  # access the first row of the mini-dataframe for the first duplicate
-                string1 = string1 + str(row['Recipe Title']) + str('_') + str('+') + str(
-                    '_')  # create a longer string of all the recipes where its used
-                string2 = string2 + str(row['Quantity']) + str('_') + str(row['Unit of Measure']) + str('_') + str(
-                    '+') + str('_')  # create a longer string of the different quntities required
-
+                string1 = string1 + str(row['Recipe Title']) + str('_') + str('+') + str('_')  # create a longer string of all the recipes where its used
             array1.append(string1)
-            array2.append(string2)
             type_new.append(row['Type'])
-        print(len(array1))
-        print(len(array2))
-        print(len(type_new))
+
         cleaned_data = pd.DataFrame(
             {"Recipe Title": array1, "Ingredient": duplicates_list, "Type": type_new, "Quantity": array2})
         # cleaned_data.to_excel('cleaned.xlsx')
