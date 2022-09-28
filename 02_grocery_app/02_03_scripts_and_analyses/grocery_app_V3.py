@@ -231,7 +231,6 @@ def executeList():
     final_list = final_list.sort_values(by='Type', ascending=False).reset_index(drop=True)
     final_list.to_excel('listV3.xlsx')
 
-
 myButton = Button(root, text="Run", command=executeList, fg='blue')
 myButton.grid(row=10, column=0)
 
