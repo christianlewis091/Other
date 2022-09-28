@@ -185,76 +185,19 @@ def executeList():
     value27 = str(e27.get())
     value28 = str(e28.get())
 
+    varlist = [value1, value2, value3, value4, value5, value6, value7,
+               value8, value9, value10, value11, value12, value13, value14,
+               value15, value16, value17, value18, value19, value20, value21,
+               value22, value23, value24, value25, value26, value27, value28]
 
     x = pd.DataFrame()
-    for i in range(0, len(names)):  # for the length of the range of the unique recipe names:
-        item = names[i]                # grab the first recipe of the unique list...
-        if value1 == item:  # if the input is equal to a specific item,
-            df_new = df.loc[(df['Recipe_Title'] == item)]  # take the first input from the user, and find where in the
-            x = pd.concat([x, df_new])  # then add it to the DataFrame that we're building for the grocery list
-        if value2 == item:  # if the input is equal to a specific item,
-            df_new = df.loc[(df['Recipe_Title'] == item)]  # take the first input from the user, and find where in the
-            x = pd.concat([x, df_new])  # then add it to the DataFrame that we're building for the grocery list
-        if value3 == item:  # if the input is equal to a specific item,
-            df_new = df.loc[(df['Recipe_Title'] == item)]  # take the first input from the user, and find where in the
-            x = pd.concat([x, df_new])  # then add it to the DataFrame that we're building for the grocery list
-        if value4 == item:  # if the input is equal to a specific item,
-            df_new = df.loc[(df['Recipe_Title'] == item)]  # take the first input from the user, and find where in the
-            x = pd.concat([x, df_new])  # then add it to the DataFrame that we're building for the grocery list
-        if value5 == item:  # if the input is equal to a specific item,
-            df_new = df.loc[(df['Recipe_Title'] == item)]  # take the first input from the user, and find where in the
-            x = pd.concat([x, df_new])  # then add it to the DataFrame that we're building for the grocery list
-        if value6 == item:  # if the input is equal to a specific item,
-            df_new = df.loc[(df['Recipe_Title'] == item)]  # take the first input from the user, and find where in the
-            x = pd.concat([x, df_new])  # then add it to the DataFrame that we're building for the grocery list
-        if value7 == item:  # if the input is equal to a specific item,
-            df_new = df.loc[(df['Recipe_Title'] == item)]  # take the first input from the user, and find where in the
-            x = pd.concat([x, df_new])  # then add it to the DataFrame that we're building for the grocery list
-        if value8 == item:  # if the input is equal to a specific item,
-            df_new = df.loc[(df['Recipe_Title'] == item)]  # take the first input from the user, and find where in the
-            x = pd.concat([x, df_new])  # then add it to the DataFrame that we're building for the grocery list
-        if value9 == item:  # if the input is equal to a specific item,
-            df_new = df.loc[(df['Recipe_Title'] == item)]  # take the first input from the user, and find where in the
-            x = pd.concat([x, df_new])  # then add it to the DataFrame that we're building for the grocery list
-        if value10 == item:  # if the input is equal to a specific item,
-            df_new = df.loc[(df['Recipe_Title'] == item)]  # take the first input from the user, and find where in the
-            x = pd.concat([x, df_new])  # then add it to the DataFrame that we're building for the grocery list
-        if value11 == item:  # if the input is equal to a specific item,
-            df_new = df.loc[(df['Recipe_Title'] == item)]  # take the first input from the user, and find where in the
-            x = pd.concat([x, df_new])  # then add it to the DataFrame that we're building for the grocery list
-        if value12 == item:  # if the input is equal to a specific item,
-            df_new = df.loc[(df['Recipe_Title'] == item)]  # take the first input from the user, and find where in the
-            x = pd.concat([x, df_new])  # then add it to the DataFrame that we're building for the grocery list
-        if value13 == item:  # if the input is equal to a specific item,
-            df_new = df.loc[(df['Recipe_Title'] == item)]  # take the first input from the user, and find where in the
-            x = pd.concat([x, df_new])  # then add it to the DataFrame that we're building for the grocery list
-        if value14 == item:  # if the input is equal to a specific item,
-            df_new = df.loc[(df['Recipe_Title'] == item)]  # take the first input from the user, and find where in the
-            x = pd.concat([x, df_new])  # then add it to the DataFrame that we're building for the grocery list
-        if value15 == item:  # if the input is equal to a specific item,
-            df_new = df.loc[(df['Recipe_Title'] == item)]  # take the first input from the user, and find where in the
-            x = pd.concat([x, df_new])  # then add it to the DataFrame that we're building for the grocery list
-        if value16 == item:  # if the input is equal to a specific item,
-            df_new = df.loc[(df['Recipe_Title'] == item)]  # take the first input from the user, and find where in the
-            x = pd.concat([x, df_new])  # then add it to the DataFrame that we're building for the grocery list
-        if value17 == item:  # if the input is equal to a specific item,
-            df_new = df.loc[(df['Recipe_Title'] == item)]  # take the first input from the user, and find where in the
-            x = pd.concat([x, df_new])  # then add it to the DataFrame that we're building for the grocery list
-        if value18 == item:  # if the input is equal to a specific item,
-            df_new = df.loc[(df['Recipe_Title'] == item)]  # take the first input from the user, and find where in the
-            x = pd.concat([x, df_new])  # then add it to the DataFrame that we're building for the grocery list
-        if value19 == item:  # if the input is equal to a specific item,
-            df_new = df.loc[(df['Recipe_Title'] == item)]  # take the first input from the user, and find where in the
-            x = pd.concat([x, df_new])  # then add it to the DataFrame that we're building for the grocery list
-        if value20 == item:  # if the input is equal to a specific item,
-            df_new = df.loc[(df['Recipe_Title'] == item)]  # take the first input from the user, and find where in the
-            x = pd.concat([x, df_new])  # then add it to the DataFrame that we're building for the grocery list
-        if value21 == item:  # if the input is equal to a specific item,
-            df_new = df.loc[(df['Recipe_Title'] == item)]  # take the first input from the user, and find where in the
-            x = pd.concat([x, df_new])  # then add it to the DataFrame that we're building for the grocery list
+    for i in range(0, len(names)):        # for the length of the range of the unique recipe names:
+        item = names[i]                   # grab the first recipe of the unique list...
+        for j in range(0, len(varlist)):               # now run through the variables (each of the dropdown boxes)
+            if varlist[j] == item:                 # if the input is equal to a specific item (if you find a match)
+                df_new = df.loc[(df['Recipe_Title'] == item)]  # locate this item from the database,
+                x = pd.concat([x, df_new])                     # concat it to our growing database
 
-        print(x)
-        print(x.columns)
     x['Duplicate_search'] = x.duplicated(subset='Ingredient', keep=False)  # This function identifies duplicates, by adding a new column and setting all dups to True.
     duplicates = x.loc[(x['Duplicate_search'] == True)]                    # dump all the duplicates into one DataFrame (here, there are still multiples of the same things in the dataframe)
     duplicates_list = np.unique(duplicates['Ingredient'])                  # extract a list of all the duplicate ingredients
