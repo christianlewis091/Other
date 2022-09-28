@@ -1,0 +1,1 @@
+'This app was created by Dr. Christian B Lewis. The current version is 3.0, finalized on September 29, 2022, on a train from Berlin to the Nethlands. Current issues, troubleshooting comments will be listed here. '
