@@ -1,13 +1,15 @@
 # https://www.youtube.com/watch?v=YXPyB4XeYLA&t=2640s&ab_channel=freeCodeCamp.org
 from tkinter import *
-from tabulate import tabulate
 from tkinter import ttk
 import pandas as pd
 import numpy as np
 from PIL import Image, ImageTk
 
-df = pd.read_excel(
-    r'C:\Users\lewis\venv\python310\python-masterclass-remaster-shared\personal_projects\02_grocery_app\02_02_prepared_data\recipebook2.xlsx')
+# The excel file location has been edited so that if turned into an executeable, the file must only be in
+# the same location an the executeable, and it will run.
+df = pd.read_excel('recipebook2.xlsx')
+#
+# recipes_un = pd.DataFrame[(np.unique(df['Recipe Title']))]
 # get a list of all the recipes in the database for the "Database click"
 recipes_un = (np.unique(df['Recipe Title']))  # grab each unique recipe from the recipe book and print it so the
 recipes = pd.DataFrame({"Recipe": recipes_un})
@@ -53,7 +55,7 @@ e20 = StringVar()
 e21 = StringVar()
 
 """
-This first button just creates the code to update the excel sheet if you add a new recipe
+This first button updates the excel sheet if you add a new recipe
 """
 
 def updating():
@@ -308,10 +310,7 @@ def listcreation():
         final_list = pd.concat([cleaned_data, others])
         final_list = final_list[['Ingredient', 'Quantity', 'Unit of Measure', 'Type', 'Recipe Title']]
         final_list = final_list.sort_values(by='Type', ascending=False).reset_index(drop=True)
-        final_list.to_excel(
-            r'C:/Users/lewis/venv/python310/python-masterclass-remaster-shared/personal_projects'
-            r'/02_grocery_app/02_04_output_data/list.xlsx')
-
+        final_list.to_excel('list.xlsx')
 
     myButton = Button(top, text="Execute list creation", command=executeList, fg='blue')
     myButton.grid(row=30, rowspan=7, column=0, columnspan=5)
