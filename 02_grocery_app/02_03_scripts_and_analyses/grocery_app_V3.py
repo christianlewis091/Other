@@ -232,7 +232,16 @@ def executeList():
     final_list.to_excel('listV3.xlsx')
 
 myButton = Button(root, text="Run", command=executeList, fg='blue')
-myButton.grid(row=10, column=0)
+myButton.grid(row=10, column=0, columnspan=7)
+
+summary = 'This app was created by Dr. Christian B Lewis. The current version is 3.0, finalized on September 29, 2022, on a train from Berlin to the Nethlands. Current issues, troubleshooting comments will be listed here. '
+
+def in_dev():
+    top = Toplevel()
+    myLabel = Label(top, text=summary, justify=LEFT).pack()
+
+myButton2 = Button(root, text="See Documentation", command=in_dev, fg='blue')
+myButton2.grid(row=13, column=0, columnspan=7)
 
 
 root.mainloop()
