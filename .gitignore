@@ -1,0 +1,17 @@
+/anz_calculator/.idea/.gitignore
+/ZZ_misc_pyfiles/.idea/.gitignore
+/anz_calculator/01_01_unprocessed_data/06-0805-0811812-00_Transactions_2022-05-02_2022-10-01.csv
+/anz_calculator/01_06_oldfiles/2021_2022_analysis.py
+/anz_calculator/01_02_prepared_data/August_2022.csv
+/anz_calculator/01_04_output_data/August_2022_Results.png
+/anz_calculator/01_04_output_data/August_2022_Results.xlsx
+/anz_calculator/01_06_oldfiles/combined.xlsx
+/anz_calculator/01_06_oldfiles/combined_edited.xlsx
+/ZZ_misc_pyfiles/finances.iml
+/anz_calculator/01_06_oldfiles/Finances_asofJune2022.xlsx
+/anz_calculator/01_06_oldfiles/July_2022.py
+/anz_calculator/01_06_oldfiles/June_2022.py
+/ZZ_misc_pyfiles/.idea/misc.xml
+/ZZ_misc_pyfiles/.idea/modules.xml
+/anz_calculator/01_06_oldfiles/preprocessing.py
+/ZZ_misc_pyfiles/.idea/inspectionProfiles/Project_Default.xml
