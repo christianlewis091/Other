@@ -17,7 +17,7 @@ Steps to use this MONTHLY FINANCE ANALYSIS script:
 """
 
 name = input("What month and year is it? Type in format July_2022.")
-anz = pd.read_csv(r'C:\Users\lewis\venv\python310\python-masterclass-remaster-shared\personal_projects\01_anz_calculator\01_02_prepared_data\{}.csv'.format(name))
+anz = pd.read_csv(r'C:\Users\lewis\venv\python310\python-masterclass-remaster-shared\personal_projects\anz_calculator\01_prepared_data\{}.csv'.format(name))
 
 """
 Pre-process the ANZ file for budget analysis. The exporting is doing odd things to the date format so I'm going 
@@ -68,7 +68,7 @@ for k in range(0, len(library)):
 
 anz = pd.concat([templaterow, anz]).drop_duplicates(subset = 'Merge_Index', keep='first')
 anz = anz[['Type','Description','Date','Amount']]
-anz.to_excel(r'C:/Users/lewis/venv/python310/python-masterclass-remaster-shared/personal_projects/01_anz_calculator/01_04_output_data/{}_Results.xlsx'.format(name))
+anz.to_excel(r'C:/Users/lewis/venv/python310/python-masterclass-remaster-shared/personal_projects/anz_calculator/04_output_data/{}_Results.xlsx'.format(name))
 transactions = anz.loc[(anz['Amount'] < 0)]
 transactions = np.sum(transactions['Amount'])
 
@@ -105,7 +105,7 @@ for i in range(0, len(types)):
 
 summary2 = pd.DataFrame({"Type": types, "Sum": sums_array, "Percents": percents}).dropna()
 
-with pd.ExcelWriter(r'C:/Users/lewis/venv/python310/python-masterclass-remaster-shared/personal_projects/01_anz_calculator/01_04_output_data/{}_Results.xlsx'.format(name)) as writer:
+with pd.ExcelWriter(r'C:/Users/lewis/venv/python310/python-masterclass-remaster-shared/personal_projects/anz_calculator/04_output_data/{}_Results.xlsx'.format(name)) as writer:
     anz.to_excel(writer, sheet_name='Categorized Transactions', index=False)
     summary2.to_excel(writer, sheet_name='Spending Summary', index=False)
 
@@ -130,7 +130,7 @@ for i, p in enumerate(wedges):
     ax.annotate(types[i], xy=(x, y), xytext=(1.35*np.sign(x), 1.4*y),
                 horizontalalignment=horizontalalignment, **kw)
 
-plt.savefig(r'C:/Users/lewis/venv/python310/python-masterclass-remaster-shared/personal_projects/01_anz_calculator/01_04_output_data/{}_Results.png'.format(name),
+plt.savefig(r'C:/Users/lewis/venv/python310/python-masterclass-remaster-shared/personal_projects/anz_calculator/04_output_data/{}_Results.png'.format(name),
             dpi=300, bbox_inches="tight")
 plt.close()
 
