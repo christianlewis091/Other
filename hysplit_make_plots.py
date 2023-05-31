@@ -24,7 +24,7 @@ gs.update(wspace=.25, hspace=0.15)
 # INITIALIZE FIRST SUBPLOT (RAUL MARIN)
 xtr_subsplot = fig.add_subplot(gs[0:2, 0:2])
 trajgroup = pysplit.make_trajectorygroup(r'C:/trajectories/colgate/raul_marin/*')
-mapcorners = [-55-80, -60, -55, -30]
+mapcorners = [-55-80, -70, -55, -30]
 standard_pm = None
 maxlat = mapcorners[3]
 minlat = mapcorners[1]
@@ -48,7 +48,7 @@ map.drawparallels(np.arange(-90, 90, 10), labels=[True, False, False, False], li
 
 xtr_subsplot = fig.add_subplot(gs[2:4, 0:2])
 trajgroup = pysplit.make_trajectorygroup(r'C:/trajectories/colgate/monte_tarn/*')
-mapcorners = [-55-80, -60, -55, -30]
+mapcorners = [-55-80, -70, -55, -30]
 standard_pm = None
 maxlat = mapcorners[3]
 minlat = mapcorners[1]
@@ -72,7 +72,7 @@ map.drawparallels(np.arange(-90, 90, 10), labels=[True, False, False, False], li
 
 xtr_subsplot = fig.add_subplot(gs[4:6, 0:2])
 trajgroup = pysplit.make_trajectorygroup(r'C:/trajectories/colgate/baja_rosales/*')
-mapcorners = [-55-80, -60, -55, -30]
+mapcorners = [-55-80, -70, -55, -30]
 standard_pm = None
 maxlat = mapcorners[3]
 minlat = mapcorners[1]
@@ -97,7 +97,7 @@ map.drawparallels(np.arange(-90, 90, 10), labels=[True, False, False, False], li
 
 xtr_subsplot = fig.add_subplot(gs[0:2, 2:4])
 trajgroup = pysplit.make_trajectorygroup(r'C:/trajectories/colgate/kapuni/*')
-mapcorners =  [100, -60, 180, -30]
+mapcorners = [80, -70, 180, -20]
 standard_pm = None
 maxlat = mapcorners[3]
 minlat = mapcorners[1]
@@ -122,7 +122,7 @@ map.drawparallels(np.arange(-90, 90, 10), labels=[True, False, False, False], li
 
 xtr_subsplot = fig.add_subplot(gs[2:4, 2:4])
 trajgroup = pysplit.make_trajectorygroup(r'C:/trajectories/colgate/campbell_island/*')
-mapcorners =  [100, -60, 180, -30]
+mapcorners =  [80, -70, 180, -20]
 standard_pm = None
 maxlat = mapcorners[3]
 minlat = mapcorners[1]
@@ -144,9 +144,9 @@ plt.legend()
 map.drawparallels(np.arange(-90, 90, 10), labels=[True, False, False, False], linewidth=0.5)
 # map.drawmeridians(np.arange(-180, 180, 10), labels=[1, 1, 0, 1], linewidth=0.5)
 
-plt.savefig('C:/Users/lewis/venv/python310/python-masterclass-remaster-shared/summary_plot.png')
 
-
+plt.savefig('C:/Users/lewis/venv/python310/python-masterclass-remaster-shared/summary_plot.png',
+            dpi=300, bbox_inches="tight")
 
 
 
