@@ -29,6 +29,9 @@ for j in range(0, len(codenames)):
     print("Reading trajectory information")
 
     for i in range(0, len(onlyfiles)):
+        height = str(onlyfiles[i])
+        height = height[13:17]
+
         with open(f'C:/trajectories/iteration2/{codenames[j]}/{onlyfiles[i]}', "r") as handle:
             # split the file into lines
             lines = handle.read().split("\n")
@@ -73,6 +76,7 @@ for j in range(0, len(codenames)):
                 print(codenames[j])
                 # Now we can read points from the trajectory
                 points.append({
+                    "starting_height": int(height),
                     "location": codenames[j],
                     "start_point": int(data[0]),
                     "grid": int(data[1]),

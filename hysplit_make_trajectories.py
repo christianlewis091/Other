@@ -18,10 +18,10 @@ import pandas as pd
 
 # after adding "codenames" to each site, which i'll use to write absolute file paths, I reimport it here:
 # I'm also going to make a new folder in C for each site "codename"
-df = pd.read_excel(r'C:/easy_access.xlsx')
+df = pd.read_excel(r'C:/Users/lewis/venv/python310/python-masterclass-remaster-shared/easy_access2.xlsx')
 codenames = df['Codename']
 lats = df['NewLat']
-lons = df['NewLon']
+lons = df['ChileFixLon']
 sitename = df['Site']
 
 # we're going to iterate and make trajectories for all of our sites
