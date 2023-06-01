@@ -18,6 +18,7 @@ seshadri = ['#c3121e', '#0348a1', '#ffb01c', '#027608', '#0193b0', '#9c5300', '#
 #            0sangre,   1neptune,  2pumpkin,  3clover,   4denim,    5cocoa,    6cumin,    7berry
 #Or try a color from seaborn
 colors=sns.color_palette("rocket",6)
+colors = ['','','peru','cadetblue','plum','','']
 
 """
 6/1/23: version 2 of this file that prepares the Hysplit output for plotting: 
@@ -47,10 +48,11 @@ for i in range(0, len(codenames)):
     site_points = points.loc[points['location'] == codenames[i]]
 
     # isolate the different starting altitudes
+    # only plot every 5th traj
     heights = np.unique(site_points['starting_height'])
-    h1 = site_points.loc[site_points['starting_height'] == heights[0]]
-    h2 = site_points.loc[site_points['starting_height'] == heights[1]]
-    h3 = site_points.loc[site_points['starting_height'] == heights[2]]
+    h1 = site_points.loc[site_points['starting_height'] == heights[0]][::5]
+    h2 = site_points.loc[site_points['starting_height'] == heights[1]][::5]
+    h3 = site_points.loc[site_points['starting_height'] == heights[2]][::5]
 
     # here are the means that we'll be plotting:
     site_means = means_dataframe.loc[means_dataframe['Codename'] == codenames[i]]
@@ -63,7 +65,7 @@ for i in range(0, len(codenames)):
     # Initialize first subplot
     xtr_subsplot = fig.add_subplot(gs[0:4, 0:2])
 
-    mapcorners = [lon_i-60, -70, lon_i+20, -20]
+    mapcorners = [lon_i-60, -80, lon_i+20, 0]
     maxlat = mapcorners[3]
     minlat = mapcorners[1]
     maxlon = mapcorners[2]
@@ -75,21 +77,21 @@ for i in range(0, len(codenames)):
     map.fillcontinents(color='darkgrey')
     map.drawcoastlines(linewidth=0.1)
 
-
     # add the trajectories
     y, x = (h1['y'], h1['x'])
-    map.scatter(x, y, marker='.', color='black', alpha=1, s=1)
+    map.scatter(x, y, marker='.', color=colors[2], s=1, label=str(heights[0]), alpha = 0.5)
     y, x = (h2['y'], h2['x'])
-    map.scatter(x, y, marker='.', color='red', alpha=1, s=1)
+    map.scatter(x, y, marker='.', color=colors[3], s=1, label=str(heights[1]), alpha = 0.5)
     y, x = (h3['y'], h3['x'])
-    map.scatter(x, y, marker='.', color='blue', alpha=1, s=1)
+    map.scatter(x, y, marker='.', color=colors[4], s=1, label=str(heights[2]), alpha = 0.5)
 
     # add the means
     y_mean, x_mean = (site_means['y'], site_means['x'])
-    map.scatter(x_mean, y_mean, marker='.', color='brown', alpha=1)
+    map.plot(x_mean, y_mean, marker='.', color='black', alpha=1)
 
     map.drawparallels(np.arange(-90, 90, 20), labels=[True, False, False, False], linewidth=0.5)
     map.drawmeridians(np.arange(-180, 180, 20), labels=[1, 1, 0, 1], linewidth=0.5)
+    plt.legend()
 
     # Initialize second subplot (ZOOM IN)
     xtr_subsplot = fig.add_subplot(gs[0:4, 2:4])
@@ -109,25 +111,26 @@ for i in range(0, len(codenames)):
 
     # add the trajectories
     y, x = (h1['y'], h1['x'])
-    map.scatter(x, y, marker='.', color=colors[2], alpha=1, s=1, label=str(heights[0]))
+    map.scatter(x, y, marker='.', color=colors[2], s=1, label=str(heights[0]), alpha = 0.5)
     y, x = (h2['y'], h2['x'])
-    map.scatter(x, y, marker='.', color=colors[3], alpha=1, s=1, label=str(heights[1]))
+    map.scatter(x, y, marker='.', color=colors[3], s=1, label=str(heights[1]), alpha = 0.5)
     y, x = (h3['y'], h3['x'])
-    map.scatter(x, y, marker='.', color=colors[4], alpha=1, s=1, label=str(heights[2]))
+    map.scatter(x, y, marker='.', color=colors[4], s=1, label=str(heights[2]), alpha = 0.5)
 
     # add the means
     y_mean, x_mean = (site_means['y'], site_means['x'])
-    map.scatter(x_mean, y_mean, marker='.', color='brown', alpha=1)
+    map.scatter(x_mean, y_mean, marker='.', color='black', alpha=1)
 
-    map.drawparallels(np.arange(-90, 90, 20), labels=[True, False, False, False], linewidth=0.5)
-    map.drawmeridians(np.arange(-180, 180, 20), labels=[1, 1, 0, 1], linewidth=0.5)
-
+    map.drawparallels(np.arange(-90, 90, 2), labels=[True, False, False, False], linewidth=0.5)
+    map.drawmeridians(np.arange(-180, 180, 2), labels=[1, 1, 0, 1], linewidth=0.5)
+    plt.legend()
 
     # Third subplot = altitudes
     xtr_subsplot = fig.add_subplot(gs[4:6, 0:4])
-    plt.scatter(h1['timestep'], h1['z'], color)
-    plt.scatter(h2['timestep'], h2['z'])
-    plt.scatter(h3['timestep'], h3['z'])
+    plt.plot(h1['timestep'], h1['z'] , color=colors[2], label=str(heights[0]))
+    plt.plot(h2['timestep'], h2['z'] , color=colors[3], label=str(heights[1]))
+    plt.plot(h3['timestep'], h3['z'] , color=colors[4], label=str(heights[2]))
+    plt.legend()
 
     plt.savefig(f'C:/Users/lewis/venv/python310/python-masterclass-remaster-shared/plots/{codenames[i]}.png',
                 dpi=300, bbox_inches="tight")
