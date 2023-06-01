@@ -31,11 +31,12 @@ for i in range(0, len(codenames)):
     meteo_dir = r'C:/hysplit/met_data'
     basename = 'iteration2'
 
-    years = [2005, 2007, 2009]
-    months = [1, 2, 12]
+    years = [2005]
+    months = [12]
     hours = [12]
     altitudes = [10, 100, 200]
     location = (lats[i], lons[i])
+    print(location)
     runtime = -168  # 1 week
     pysplit.generate_bulktraj(basename, working_dir, storage_dir, meteo_dir,
                               years, months, hours, altitudes, location, runtime,

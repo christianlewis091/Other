@@ -8,145 +8,203 @@ import pandas as pd
 from os import listdir
 from os.path import isfile, join
 
-# READ IN DATA CREATED BY "hysplit_prepare_output.py"
-rm = pd.read_excel('C:/Users/lewis/venv/python310/python-masterclass-remaster-shared/rm.xlsx')
-mt = pd.read_excel('C:/Users/lewis/venv/python310/python-masterclass-remaster-shared/mt.xlsx')
-kp = pd.read_excel('C:/Users/lewis/venv/python310/python-masterclass-remaster-shared/kp.xlsx')
-ci = pd.read_excel('C:/Users/lewis/venv/python310/python-masterclass-remaster-shared/ci.xlsx')
-bj = pd.read_excel('C:/Users/lewis/venv/python310/python-masterclass-remaster-shared/bj.xlsx')
+"""
+6/1/23: version 2 of this file that prepares the Hysplit output for plotting: 
+Needs updating to do trajectories for everty site. Old version commented out below
+"""
 
-size1 = 10
-# INITIALIZE FIGURE
-fig = plt.figure(figsize=(12,8))
-gs = gridspec.GridSpec(6, 4)
-gs.update(wspace=.25, hspace=0.15)
+# We're still going to loop through each site using the codenames listed in the previous scripts as well
+df = pd.read_excel(r'C:/easy_access.xlsx')
+codenames = df['Codename']
 
-# INITIALIZE FIRST SUBPLOT (RAUL MARIN)
-xtr_subsplot = fig.add_subplot(gs[0:2, 0:2])
-trajgroup = pysplit.make_trajectorygroup(r'C:/trajectories/colgate/raul_marin/*')
-mapcorners = [-55-80, -70, -55, -30]
-standard_pm = None
-maxlat = mapcorners[3]
-minlat = mapcorners[1]
-nz_max_lon = mapcorners[2]
-nz_min_lon = mapcorners[0]
-map = Basemap(llcrnrlat=minlat, urcrnrlat=maxlat, llcrnrlon=nz_min_lon, urcrnrlon=nz_max_lon, resolution='l')
-map.drawmapboundary(fill_color='lightgrey')
-map.fillcontinents(color='darkgrey')
-map.drawcoastlines(linewidth=0.1)
-color_dict = {10 : 'blue'}
-for traj in trajgroup:
-    altitude0 = traj.data.geometry.apply(lambda p: p.z)[0]
-    traj.trajcolor = color_dict[altitude0]
-for traj in trajgroup:
-    map.plot(*traj.path.xy, c=traj.trajcolor, latlon=True, zorder=20, alpha=0.1)
-y, x = map(rm['y'], rm['x'])
-map.scatter(x, y, marker='o', edgecolor='black', facecolors='black', alpha=0.5, s=size1, label='Raul Marin')
-plt.legend()
-map.drawparallels(np.arange(-90, 90, 10), labels=[True, False, False, False], linewidth=0.5)
-# map.drawmeridians(np.arange(-180, 180, 10), labels=[1, 1, 0, 1], linewidth=0.5)
-
-xtr_subsplot = fig.add_subplot(gs[2:4, 0:2])
-trajgroup = pysplit.make_trajectorygroup(r'C:/trajectories/colgate/monte_tarn/*')
-mapcorners = [-55-80, -70, -55, -30]
-standard_pm = None
-maxlat = mapcorners[3]
-minlat = mapcorners[1]
-nz_max_lon = mapcorners[2]
-nz_min_lon = mapcorners[0]
-map = Basemap(llcrnrlat=minlat, urcrnrlat=maxlat, llcrnrlon=nz_min_lon, urcrnrlon=nz_max_lon, resolution='l')
-map.drawmapboundary(fill_color='lightgrey')
-map.fillcontinents(color='darkgrey')
-map.drawcoastlines(linewidth=0.1)
-color_dict = {10 : 'blue'}
-for traj in trajgroup:
-    altitude0 = traj.data.geometry.apply(lambda p: p.z)[0]
-    traj.trajcolor = color_dict[altitude0]
-for traj in trajgroup:
-    map.plot(*traj.path.xy, c=traj.trajcolor, latlon=True, zorder=20, alpha=0.1)
-y, x = map(mt['y'], mt['x'])
-map.scatter(x, y, marker='o', edgecolor='black', facecolors='black', alpha=0.5, s=size1, label='Monte Tarn')
-plt.legend()
-map.drawparallels(np.arange(-90, 90, 10), labels=[True, False, False, False], linewidth=0.5)
-# map.drawmeridians(np.arange(-180, 180, 10), labels=[1, 1, 0, 1], linewidth=0.5)
-
-xtr_subsplot = fig.add_subplot(gs[4:6, 0:2])
-trajgroup = pysplit.make_trajectorygroup(r'C:/trajectories/colgate/baja_rosales/*')
-mapcorners = [-55-80, -70, -55, -30]
-standard_pm = None
-maxlat = mapcorners[3]
-minlat = mapcorners[1]
-nz_max_lon = mapcorners[2]
-nz_min_lon = mapcorners[0]
-map = Basemap(llcrnrlat=minlat, urcrnrlat=maxlat, llcrnrlon=nz_min_lon, urcrnrlon=nz_max_lon, resolution='l')
-map.drawmapboundary(fill_color='lightgrey')
-map.fillcontinents(color='darkgrey')
-map.drawcoastlines(linewidth=0.1)
-color_dict = {10 : 'blue'}
-for traj in trajgroup:
-    altitude0 = traj.data.geometry.apply(lambda p: p.z)[0]
-    traj.trajcolor = color_dict[altitude0]
-for traj in trajgroup:
-    map.plot(*traj.path.xy, c=traj.trajcolor, latlon=True, zorder=20, alpha=0.1)
-y, x = map(bj['y'], bj['x'])
-map.scatter(x, y, marker='o', edgecolor='black', facecolors='black', alpha=0.5, s=size1, label='Baja Rosales')
-plt.legend()
-map.drawparallels(np.arange(-90, 90, 10), labels=[True, False, False, False], linewidth=0.5)
-# map.drawmeridians(np.arange(-180, 180, 10), labels=[1, 1, 0, 1], linewidth=0.5)
+# # Read in the sheet that was made from the prvious script (hysplit_prepare_output.py)
+# means_dataframe = pd.read_excel('C:/Users/lewis/venv/python310/python-masterclass-remaster-shared/means_dataframe.xlsx')
+#
+# for i in range(0, len(codenames)):
+#     # locate based on the codename
+#     this_site = means_dataframe.loc[means_dataframe['Codename'] == codenames[i]]
+#
+#     fig = plt.figure(figsize=(4, 4))
+#     gs = gridspec.GridSpec(6, 4)
+#     gs.update(wspace=.25, hspace=0.15)
+#
+#     xtr_subsplot = fig.add_subplot(gs[0:4, 0:4])
+#
+#     # have to plot the trajectories themselves:grab them!
+#     trajgroup = pysplit.make_trajectorygroup(f'C:/trajectories/iteration2/{codenames[i]}/*')
+#     mapcorners = [-55-80, -70, -55, -30]
+#
+#     a = plt.axes([.65, .6, .2, .2], facecolor='y')
+#
+#
+#
+#     xtr_subsplot = fig.add_subplot(gs[4:6, 0:4])
+#
+#
+#
+#
+# plt.show()
+#
 
 
-xtr_subsplot = fig.add_subplot(gs[0:2, 2:4])
-trajgroup = pysplit.make_trajectorygroup(r'C:/trajectories/colgate/kapuni/*')
-mapcorners = [80, -70, 180, -20]
-standard_pm = None
-maxlat = mapcorners[3]
-minlat = mapcorners[1]
-nz_max_lon = mapcorners[2]
-nz_min_lon = mapcorners[0]
-map = Basemap(llcrnrlat=minlat, urcrnrlat=maxlat, llcrnrlon=nz_min_lon, urcrnrlon=nz_max_lon, resolution='l')
-map.drawmapboundary(fill_color='lightgrey')
-map.fillcontinents(color='darkgrey')
-map.drawcoastlines(linewidth=0.1)
-color_dict = {10 : 'blue'}
-for traj in trajgroup:
-    altitude0 = traj.data.geometry.apply(lambda p: p.z)[0]
-    traj.trajcolor = color_dict[altitude0]
-for traj in trajgroup:
-    map.plot(*traj.path.xy, c=traj.trajcolor, latlon=True, zorder=20, alpha=0.1)
-y, x = map(kp['y'], kp['x'])
-map.scatter(x, y, marker='o', edgecolor='black', facecolors='black', alpha=0.5, s=size1, label='Kapuni')
-plt.legend()
-map.drawparallels(np.arange(-90, 90, 10), labels=[True, False, False, False], linewidth=0.5)
-# map.drawmeridians(np.arange(-180, 180, 10), labels=[1, 1, 0, 1], linewidth=0.5)
 
 
-xtr_subsplot = fig.add_subplot(gs[2:4, 2:4])
-trajgroup = pysplit.make_trajectorygroup(r'C:/trajectories/colgate/campbell_island/*')
-mapcorners =  [80, -70, 180, -20]
-standard_pm = None
-maxlat = mapcorners[3]
-minlat = mapcorners[1]
-nz_max_lon = mapcorners[2]
-nz_min_lon = mapcorners[0]
-map = Basemap(llcrnrlat=minlat, urcrnrlat=maxlat, llcrnrlon=nz_min_lon, urcrnrlon=nz_max_lon, resolution='l')
-map.drawmapboundary(fill_color='lightgrey')
-map.fillcontinents(color='darkgrey')
-map.drawcoastlines(linewidth=0.1)
-color_dict = {10 : 'blue'}
-for traj in trajgroup:
-    altitude0 = traj.data.geometry.apply(lambda p: p.z)[0]
-    traj.trajcolor = color_dict[altitude0]
-for traj in trajgroup:
-    map.plot(*traj.path.xy, c=traj.trajcolor, latlon=True, zorder=20, alpha=0.1)
-y, x = map(ci['y'], ci['x'])
-map.scatter(x, y, marker='o', edgecolor='black', facecolors='black', alpha=0.5, s=size1, label='Campbell Island')
-plt.legend()
-map.drawparallels(np.arange(-90, 90, 10), labels=[True, False, False, False], linewidth=0.5)
-# map.drawmeridians(np.arange(-180, 180, 10), labels=[1, 1, 0, 1], linewidth=0.5)
 
 
-plt.savefig('C:/Users/lewis/venv/python310/python-masterclass-remaster-shared/summary_plot.png',
-            dpi=300, bbox_inches="tight")
+
+
+
+
+
+
+
+
+
+
+
+"""
+Old version
+"""
+
+# # READ IN DATA CREATED BY "hysplit_prepare_output.py"
+# rm = pd.read_excel('C:/Users/lewis/venv/python310/python-masterclass-remaster-shared/rm.xlsx')
+# mt = pd.read_excel('C:/Users/lewis/venv/python310/python-masterclass-remaster-shared/mt.xlsx')
+# kp = pd.read_excel('C:/Users/lewis/venv/python310/python-masterclass-remaster-shared/kp.xlsx')
+# ci = pd.read_excel('C:/Users/lewis/venv/python310/python-masterclass-remaster-shared/ci.xlsx')
+# bj = pd.read_excel('C:/Users/lewis/venv/python310/python-masterclass-remaster-shared/bj.xlsx')
+#
+# size1 = 10
+# # INITIALIZE FIGURE
+# fig = plt.figure(figsize=(12,8))
+# gs = gridspec.GridSpec(6, 4)
+# gs.update(wspace=.25, hspace=0.15)
+#
+# # INITIALIZE FIRST SUBPLOT (RAUL MARIN)
+# xtr_subsplot = fig.add_subplot(gs[0:2, 0:2])
+# trajgroup = pysplit.make_trajectorygroup(r'C:/trajectories/colgate/raul_marin/*')
+# mapcorners = [-55-80, -70, -55, -30]
+# standard_pm = None
+# maxlat = mapcorners[3]
+# minlat = mapcorners[1]
+# nz_max_lon = mapcorners[2]
+# nz_min_lon = mapcorners[0]
+# map = Basemap(llcrnrlat=minlat, urcrnrlat=maxlat, llcrnrlon=nz_min_lon, urcrnrlon=nz_max_lon, resolution='l')
+# map.drawmapboundary(fill_color='lightgrey')
+# map.fillcontinents(color='darkgrey')
+# map.drawcoastlines(linewidth=0.1)
+# color_dict = {10 : 'blue'}
+# for traj in trajgroup:
+#     altitude0 = traj.data.geometry.apply(lambda p: p.z)[0]
+#     traj.trajcolor = color_dict[altitude0]
+# for traj in trajgroup:
+#     map.plot(*traj.path.xy, c=traj.trajcolor, latlon=True, zorder=20, alpha=0.1)
+# y, x = map(rm['y'], rm['x'])
+# map.scatter(x, y, marker='o', edgecolor='black', facecolors='black', alpha=0.5, s=size1, label='Raul Marin')
+# plt.legend()
+# map.drawparallels(np.arange(-90, 90, 10), labels=[True, False, False, False], linewidth=0.5)
+# # map.drawmeridians(np.arange(-180, 180, 10), labels=[1, 1, 0, 1], linewidth=0.5)
+#
+# xtr_subsplot = fig.add_subplot(gs[2:4, 0:2])
+# trajgroup = pysplit.make_trajectorygroup(r'C:/trajectories/colgate/monte_tarn/*')
+# mapcorners = [-55-80, -70, -55, -30]
+# standard_pm = None
+# maxlat = mapcorners[3]
+# minlat = mapcorners[1]
+# nz_max_lon = mapcorners[2]
+# nz_min_lon = mapcorners[0]
+# map = Basemap(llcrnrlat=minlat, urcrnrlat=maxlat, llcrnrlon=nz_min_lon, urcrnrlon=nz_max_lon, resolution='l')
+# map.drawmapboundary(fill_color='lightgrey')
+# map.fillcontinents(color='darkgrey')
+# map.drawcoastlines(linewidth=0.1)
+# color_dict = {10 : 'blue'}
+# for traj in trajgroup:
+#     altitude0 = traj.data.geometry.apply(lambda p: p.z)[0]
+#     traj.trajcolor = color_dict[altitude0]
+# for traj in trajgroup:
+#     map.plot(*traj.path.xy, c=traj.trajcolor, latlon=True, zorder=20, alpha=0.1)
+# y, x = map(mt['y'], mt['x'])
+# map.scatter(x, y, marker='o', edgecolor='black', facecolors='black', alpha=0.5, s=size1, label='Monte Tarn')
+# plt.legend()
+# map.drawparallels(np.arange(-90, 90, 10), labels=[True, False, False, False], linewidth=0.5)
+# # map.drawmeridians(np.arange(-180, 180, 10), labels=[1, 1, 0, 1], linewidth=0.5)
+#
+# xtr_subsplot = fig.add_subplot(gs[4:6, 0:2])
+# trajgroup = pysplit.make_trajectorygroup(r'C:/trajectories/colgate/baja_rosales/*')
+# mapcorners = [-55-80, -70, -55, -30]
+# standard_pm = None
+# maxlat = mapcorners[3]
+# minlat = mapcorners[1]
+# nz_max_lon = mapcorners[2]
+# nz_min_lon = mapcorners[0]
+# map = Basemap(llcrnrlat=minlat, urcrnrlat=maxlat, llcrnrlon=nz_min_lon, urcrnrlon=nz_max_lon, resolution='l')
+# map.drawmapboundary(fill_color='lightgrey')
+# map.fillcontinents(color='darkgrey')
+# map.drawcoastlines(linewidth=0.1)
+# color_dict = {10 : 'blue'}
+# for traj in trajgroup:
+#     altitude0 = traj.data.geometry.apply(lambda p: p.z)[0]
+#     traj.trajcolor = color_dict[altitude0]
+# for traj in trajgroup:
+#     map.plot(*traj.path.xy, c=traj.trajcolor, latlon=True, zorder=20, alpha=0.1)
+# y, x = map(bj['y'], bj['x'])
+# map.scatter(x, y, marker='o', edgecolor='black', facecolors='black', alpha=0.5, s=size1, label='Baja Rosales')
+# plt.legend()
+# map.drawparallels(np.arange(-90, 90, 10), labels=[True, False, False, False], linewidth=0.5)
+# # map.drawmeridians(np.arange(-180, 180, 10), labels=[1, 1, 0, 1], linewidth=0.5)
+#
+#
+# xtr_subsplot = fig.add_subplot(gs[0:2, 2:4])
+# trajgroup = pysplit.make_trajectorygroup(r'C:/trajectories/colgate/kapuni/*')
+# mapcorners = [80, -70, 180, -20]
+# standard_pm = None
+# maxlat = mapcorners[3]
+# minlat = mapcorners[1]
+# nz_max_lon = mapcorners[2]
+# nz_min_lon = mapcorners[0]
+# map = Basemap(llcrnrlat=minlat, urcrnrlat=maxlat, llcrnrlon=nz_min_lon, urcrnrlon=nz_max_lon, resolution='l')
+# map.drawmapboundary(fill_color='lightgrey')
+# map.fillcontinents(color='darkgrey')
+# map.drawcoastlines(linewidth=0.1)
+# color_dict = {10 : 'blue'}
+# for traj in trajgroup:
+#     altitude0 = traj.data.geometry.apply(lambda p: p.z)[0]
+#     traj.trajcolor = color_dict[altitude0]
+# for traj in trajgroup:
+#     map.plot(*traj.path.xy, c=traj.trajcolor, latlon=True, zorder=20, alpha=0.1)
+# y, x = map(kp['y'], kp['x'])
+# map.scatter(x, y, marker='o', edgecolor='black', facecolors='black', alpha=0.5, s=size1, label='Kapuni')
+# plt.legend()
+# map.drawparallels(np.arange(-90, 90, 10), labels=[True, False, False, False], linewidth=0.5)
+# # map.drawmeridians(np.arange(-180, 180, 10), labels=[1, 1, 0, 1], linewidth=0.5)
+#
+#
+# xtr_subsplot = fig.add_subplot(gs[2:4, 2:4])
+# trajgroup = pysplit.make_trajectorygroup(r'C:/trajectories/colgate/campbell_island/*')
+# mapcorners =  [80, -70, 180, -20]
+# standard_pm = None
+# maxlat = mapcorners[3]
+# minlat = mapcorners[1]
+# nz_max_lon = mapcorners[2]
+# nz_min_lon = mapcorners[0]
+# map = Basemap(llcrnrlat=minlat, urcrnrlat=maxlat, llcrnrlon=nz_min_lon, urcrnrlon=nz_max_lon, resolution='l')
+# map.drawmapboundary(fill_color='lightgrey')
+# map.fillcontinents(color='darkgrey')
+# map.drawcoastlines(linewidth=0.1)
+# color_dict = {10 : 'blue'}
+# for traj in trajgroup:
+#     altitude0 = traj.data.geometry.apply(lambda p: p.z)[0]
+#     traj.trajcolor = color_dict[altitude0]
+# for traj in trajgroup:
+#     map.plot(*traj.path.xy, c=traj.trajcolor, latlon=True, zorder=20, alpha=0.1)
+# y, x = map(ci['y'], ci['x'])
+# map.scatter(x, y, marker='o', edgecolor='black', facecolors='black', alpha=0.5, s=size1, label='Campbell Island')
+# plt.legend()
+# map.drawparallels(np.arange(-90, 90, 10), labels=[True, False, False, False], linewidth=0.5)
+# # map.drawmeridians(np.arange(-180, 180, 10), labels=[1, 1, 0, 1], linewidth=0.5)
+#
+#
+# plt.savefig('C:/Users/lewis/venv/python310/python-masterclass-remaster-shared/summary_plot.png',
+#             dpi=300, bbox_inches="tight")
 
 
 
