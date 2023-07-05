@@ -67,16 +67,27 @@ e40 = StringVar()
 e41 = StringVar()
 e42 = StringVar()
 
+e43 = StringVar()
+e44 = StringVar()
+e45 = StringVar()
+e46 = StringVar()
+e47 = StringVar()
+e48 = StringVar()
+e49 = StringVar()
+
+
 bfast = df.loc[df['Meal'] == 'breakfast']
 mid = df.loc[df['Meal'] == 'lunch']
 dinn = df.loc[df['Meal'] == 'dinner']
 side = df.loc[df['Meal'] == 'side']
+des = df.loc[df['Meal'] == 'dessert']
 
 all = ['all']+ list(df.Recipe_Title.unique())  # CREATES THE ITEMS IN DROPDOWN LIST
 bfast = ['breakfast recipes'] + list(bfast.Recipe_Title.unique())  # CREATES THE ITEMS IN DROPDOWN LIST
 mid = ['lunch recipes'] + list(mid.Recipe_Title.unique())  # CREATES THE ITEMS IN DROPDOWN LIST
 dinn = ['dinner recipes'] + list(dinn.Recipe_Title.unique())  # CREATES THE ITEMS IN DROPDOWN LIST
 side = ['sides'] + list(side.Recipe_Title.unique())  # CREATES THE ITEMS IN DROPDOWN LIST
+des = ['dessert'] + list(des.Recipe_Title.unique())  # CREATES THE ITEMS IN DROPDOWN LIST
 
 breakfast_column = 1
 lunch_column = 2
@@ -97,6 +108,7 @@ dinner = Label(root, text="Dinner")
 side1 = Label(root, text="Side #1")
 side2 = Label(root, text="Side #2")
 extra = Label(root, text="Else?")
+dessert = Label(root, text="Dessert")
 
 mon.grid(row=1, column=0)
 tues.grid(row=2, column=0)
@@ -111,6 +123,8 @@ dinner.grid(row=0, column=dinner_column)
 side1.grid(row=0, column=side_column1)
 side2.grid(row=0, column=side_column2)
 extra.grid(row=0,column=side_column2+1)
+dessert.grid(row=0,column=side_column2+2)
+
 
 """
 breakfast column  
@@ -218,6 +232,26 @@ e40_entry.grid(row=5, column=6)
 e41_entry.grid(row=6, column=6)
 e42_entry.grid(row=7, column=6)
 
+"""
+Dessert
+"""
+
+e43_entry = ttk.OptionMenu(root, e43, *des)
+e44_entry = ttk.OptionMenu(root, e44, *des)
+e45_entry = ttk.OptionMenu(root, e45, *des)
+e46_entry = ttk.OptionMenu(root, e46, *des)
+e47_entry = ttk.OptionMenu(root, e47, *des)
+e48_entry = ttk.OptionMenu(root, e48, *des)
+e49_entry = ttk.OptionMenu(root, e49, *des)
+e43_entry.grid(row=1, column=7)
+e44_entry.grid(row=2, column=7)
+e45_entry.grid(row=3, column=7)
+e46_entry.grid(row=4, column=7)
+e47_entry.grid(row=5, column=7)
+e48_entry.grid(row=6, column=7)
+e49_entry.grid(row=7, column=7)
+
+
 
 version_message = Label(root, text="Created by: Dr. Christian B. Lewis, Version 3.0, September 28, 2022")
 version_message.grid(row=11, column=0, columnspan=5)
@@ -271,12 +305,21 @@ def executeList():
     value41= str(e41.get())
     value42 = str(e42.get())
 
+    value43 = str(e43.get())
+    value44 = str(e44.get())
+    value45 = str(e45.get())
+    value46 = str(e46.get())
+    value47 = str(e47.get())
+    value48 = str(e48.get())
+    value49 = str(e49.get())
+
     varlist = [value1, value2, value3, value4, value5, value6, value7,
                value8, value9, value10, value11, value12, value13, value14,
                value15, value16, value17, value18, value19, value20, value21,
                value22, value23, value24, value25, value26, value27, value28,
-               value29, value30, value31, value32, value33, value34, value35, value36, value37,
-               value38, value39, value40, value41, value42]
+               value29, value30, value31, value32, value33, value34, value35,
+               value36, value37, value38, value39, value40, value41, value42,
+               value43, value44, value45, value46, value47, value48, value49]
 
     # ASSEMBLE THE LIST
     x = pd.DataFrame()
@@ -342,8 +385,9 @@ def executeList():
     d = [value22, value23, value24, value25, value26, value27, value28]
     e = [value29, value30, value31, value32, value33, value34, value35]
     f = [value36, value37, value38, value39, value40, value41, value42]
+    g = [value43, value44, value45, value46, value47, value48, value49]
     days = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday']
-    print_post = pd.DataFrame({"Day of Week": days, "Breakfast": a, "Lunch": b, "Dinner": c, "Side #1": d, "Side #2": e, "Extra": f})
+    print_post = pd.DataFrame({"Day of Week": days, "Breakfast": a, "Lunch": b, "Dinner": c, "Side #1": d, "Side #2": e, "Extra": f, "Dessert": g})
 
     for item in ['breakfast recipes','lunch recipes','dinner recipes','sides','all']:
         print_post = print_post.replace(item, '')
