@@ -15,11 +15,12 @@ import numpy as np
 today = date.today()
 print("Today's date:", today)
 df = pd.read_excel('recipebookV4.xlsx')
-type_list = pd.read_excel('recipebookV4.xlsx', sheet_name='Ingredient List')
+type_list = pd.read_excel('recipebookV4.xlsx', sheet_name='Ingredient List', skiprows=10)
+
 
 root = Tk()
 names = df.Recipe_Title.unique()
-print(names)
+
 
 e1 = StringVar()
 e2 = StringVar()
@@ -306,14 +307,27 @@ def executeList():
         array1.append(string1)
         array3.append(string2)
 
-        type_new.append(row['Type'])
-
-    cleaned_data = pd.DataFrame(
-        {"Recipe_Title": array1, "Ingredient": duplicates_list, "Type": type_new, "Quantity": array2, "Unit_of_Measure": array3})
-    # cleaned_data.to_excel('cleaned.xlsx')
+    cleaned_data = pd.DataFrame({"Recipe_Title": array1, "Ingredient": duplicates_list, "Quantity": array2, "Unit_of_Measure": array3})
 
     others = x.loc[(x['Duplicate_search'] == False)]  # all the ones where the original dup search was false.
     final_list = pd.concat([cleaned_data, others])
+
+    # add the ingredient "types" from the ingredient database
+    ingredient_list = final_list['Ingredient'].reset_index(drop=True)
+    type_list_ing = type_list['Ingredient'].reset_index(drop=True)
+    type_list_types = type_list['Type'].reset_index(drop=True)
+    type_array = []
+
+    # loop through the chosen ingredients
+    for m in range(0, len(ingredient_list)):
+        # loop through the ingredient database
+        for n in range(0, len(type_list)):
+
+            if str(ingredient_list[m]) == str(type_list_ing[n]):
+                type_array.append(type_list_types[n])
+                print(type_array)
+
+    final_list['Type'] = type_array
     final_list = final_list[['Ingredient', 'Quantity', 'Unit_of_Measure', 'Type', 'Recipe_Title']]
     final_list = final_list.sort_values(by='Type', ascending=False).reset_index(drop=True)
     final_list.to_excel(f'listV4_{today}.xlsx')
