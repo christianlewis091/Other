@@ -278,6 +278,7 @@ def executeList():
                value29, value30, value31, value32, value33, value34, value35, value36, value37,
                value38, value39, value40, value41, value42]
 
+    # ASSEMBLE THE LIST
     x = pd.DataFrame()
     for i in range(0, len(names)):        # for the length of the range of the unique recipe names:
         item = names[i]                   # grab the first recipe of the unique list...
@@ -286,6 +287,7 @@ def executeList():
                 df_new = df.loc[(df['Recipe_Title'] == item)]  # locate this item from the database,
                 x = pd.concat([x, df_new])                     # concat it to our growing database
 
+    # FIND AND REMOVE DUPLICATES IN THE LIST
     x['Duplicate_search'] = x.duplicated(subset='Ingredient', keep=False)  # This function identifies duplicates, by adding a new column and setting all dups to True.
     duplicates = x.loc[(x['Duplicate_search'] == True)]                    # dump all the duplicates into one DataFrame (here, there are still multiples of the same things in the dataframe)
     duplicates_list = np.unique(duplicates['Ingredient'])                  # extract a list of all the duplicate ingredients
@@ -312,6 +314,7 @@ def executeList():
     others = x.loc[(x['Duplicate_search'] == False)]  # all the ones where the original dup search was false.
     final_list = pd.concat([cleaned_data, others])
 
+    # ADD THE TYPE CATEGORY WHICH LIVES IN THE INGREDIENT DATABASE
     # add the ingredient "types" from the ingredient database
     ingredient_list = final_list['Ingredient'].reset_index(drop=True)
     type_list_ing = type_list['Ingredient'].reset_index(drop=True)
@@ -330,7 +333,7 @@ def executeList():
     final_list['Type'] = type_array
     final_list = final_list[['Ingredient', 'Quantity', 'Unit_of_Measure', 'Type', 'Recipe_Title']]
     final_list = final_list.sort_values(by='Type', ascending=False).reset_index(drop=True)
-    final_list.to_excel(f'listV4_{today}.xlsx')
+    # final_list.to_excel(f'listV4_{today}.xlsx')
 
     # adding printing of the list functionality
     a = [value1, value2, value3, value4, value5, value6, value7]
@@ -339,8 +342,32 @@ def executeList():
     d = [value22, value23, value24, value25, value26, value27, value28]
     e = [value29, value30, value31, value32, value33, value34, value35]
     f = [value36, value37, value38, value39, value40, value41, value42]
-    print_post = pd.DataFrame({"Breakfast": a, "Lunch": b, "Dinner": c, "Side #1": d, "Side #2": e, "Extra": f})
-    print_post.to_excel(f'choicesV4_{today}.xlsx')
+    days = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday']
+    print_post = pd.DataFrame({"Day of Week": days, "Breakfast": a, "Lunch": b, "Dinner": c, "Side #1": d, "Side #2": e, "Extra": f})
+
+    for item in ['breakfast recipes','lunch recipes','dinner recipes','sides','all']:
+        print_post = print_post.replace(item, '')
+    # print_post.to_excel(f'choicesV4_{today}.xlsx')
+
+    # ASSEMBLE A SOURCE LIST
+    sourceDF = pd.DataFrame()
+    for i in range(0, len(names)):        # for the length of the range of the unique recipe names:
+        item = names[i]                   # grab the first recipe of the unique list...
+        for j in range(0, len(varlist)):               # now run through the variables (each of the dropdown boxes)
+            if varlist[j] == item:                 # if the input is equal to a specific item (if you find a match)
+                df_new = df.loc[(df['Recipe_Title'] == item)]  # locate this item from the database,
+                sourceDF = pd.concat([x, df_new])                     # concat it to our growing database
+
+    sourceDF = sourceDF[['Recipe_Title','Source']]
+    sourceDF = sourceDF.drop_duplicates()
+
+    with pd.ExcelWriter(f'Output_{today}.xlsx') as writer:
+        final_list.to_excel(writer, sheet_name="Final List", index=False)
+        print_post.to_excel(writer, sheet_name="Choices", index=False)
+        sourceDF.to_excel(writer, sheet_name="Chosen Recipe Sources", index=False)
+
+
+
 
     end_message = Label(root,
                         text="Output data created! \nPlease check the folder where the .exe file is located ",
@@ -355,8 +382,6 @@ summary = 'This app was created by Dr. Christian B Lewis. The current version is
           'Current issues, troubleshooting comments will be listed here. ' \
           'In the future, I want to add the following:' \
           '1. I want to sort the ingredients based on what I can by at Bin Inn, and at the Farmers Market.'
-
-
 
 
 def in_dev():
