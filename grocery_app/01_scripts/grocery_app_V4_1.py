@@ -14,7 +14,7 @@ import numpy as np
 
 today = date.today()
 print("Today's date:", today)
-df = pd.read_excel('recipebookV4.xlsx')
+df = pd.read_excel('recipebookV4.xlsx', comment='#')
 type_list = pd.read_excel('recipebookV4.xlsx', sheet_name='Ingredient List', skiprows=10)
 
 
@@ -325,7 +325,7 @@ def executeList():
 
             if str(ingredient_list[m]) == str(type_list_ing[n]):
                 type_array.append(type_list_types[n])
-                print(type_array)
+
 
     final_list['Type'] = type_array
     final_list = final_list[['Ingredient', 'Quantity', 'Unit_of_Measure', 'Type', 'Recipe_Title']]
