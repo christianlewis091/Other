@@ -76,11 +76,11 @@ e48 = StringVar()
 e49 = StringVar()
 
 
-bfast = df.loc[df['Meal'] == 'breakfast']
-mid = df.loc[df['Meal'] == 'lunch']
-dinn = df.loc[df['Meal'] == 'dinner']
-side = df.loc[df['Meal'] == 'side']
-des = df.loc[df['Meal'] == 'dessert']
+bfast = df.loc[df['Meal'] == 'breakfast'].sort_values(by='Recipe_Title', ascending=True).reset_index(drop=True)
+mid = df.loc[df['Meal'] == 'lunch'].sort_values(by='Recipe_Title', ascending=True).reset_index(drop=True)
+dinn = df.loc[df['Meal'] == 'dinner'].sort_values(by='Recipe_Title', ascending=True).reset_index(drop=True)
+side = df.loc[df['Meal'] == 'side'].sort_values(by='Recipe_Title', ascending=True).reset_index(drop=True)
+des = df.loc[df['Meal'] == 'dessert'].sort_values(by='Recipe_Title', ascending=True).reset_index(drop=True)
 
 all = ['all']+ list(df.Recipe_Title.unique())  # CREATES THE ITEMS IN DROPDOWN LIST
 bfast = ['breakfast recipes'] + list(bfast.Recipe_Title.unique())  # CREATES THE ITEMS IN DROPDOWN LIST
