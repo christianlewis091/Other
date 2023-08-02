@@ -14,8 +14,8 @@ import numpy as np
 
 today = date.today()
 print("Today's date:", today)
-df = pd.read_excel('recipebookV4.xlsx', comment='#')
-type_list = pd.read_excel('recipebookV4.xlsx', sheet_name='Ingredient List', skiprows=10)
+df = pd.read_excel('recipebook_300723.xlsx', comment='#')
+type_list = pd.read_excel('recipebook_300723.xlsx', sheet_name='Ingredient List', skiprows=10)
 
 
 root = Tk()
@@ -366,11 +366,18 @@ def executeList():
 
     # loop through the chosen ingredients
     for m in range(0, len(ingredient_list)):
+        y = 1
         # loop through the ingredient database
         for n in range(0, len(type_list)):
 
             if str(ingredient_list[m]) == str(type_list_ing[n]):
+                # print(f"{ingredient_list[m]}, {type_list_ing[n]}")
                 type_array.append(type_list_types[n])
+                y = 2  #found a match
+
+
+        if y == 1:  # a match hasn't been found
+            type_array.append("no type")
 
 
     final_list['Type'] = type_array
