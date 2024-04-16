@@ -11,16 +11,25 @@ from tkinter import *
 from tkinter import ttk
 import pandas as pd
 import numpy as np
+import subprocess
 
 today = date.today()
 print("Today's date:", today)
-df = pd.read_excel('recipebook_300723.xlsx', comment='#')
-type_list = pd.read_excel('recipebook_300723.xlsx', sheet_name='Ingredient List', skiprows=10)
+df = pd.read_excel('RECIPES_DontChangeManually.xlsx', comment='#')
+sup = pd.read_excel('supermarket_listV5.xlsx')
 
+# convert everything to lower case for ease of use later
+df = df.applymap(lambda x: x.lower() if isinstance(x, str) else x)
+sup = sup.applymap(lambda x: x.lower() if isinstance(x, str) else x)
+
+# First a quick quality check:
+# What items exist in the RECIPE CATALOG but NOT in the Supermarket list?
+missing = [item for item in list(df['Ingredient']) if item not in list(sup['Ingredient'])]
+if len(missing) > 0:
+    print(f"Items in RecipeBook that are missing from list Supermarket List: {missing}. This may lead to pesky duplicates and future annoyances")
 
 root = Tk()
 names = df.Recipe_Title.unique()
-
 
 e1 = StringVar()
 e2 = StringVar()
@@ -74,7 +83,6 @@ e46 = StringVar()
 e47 = StringVar()
 e48 = StringVar()
 e49 = StringVar()
-
 
 bfast = df.loc[df['Meal'] == 'breakfast'].sort_values(by='Recipe_Title', ascending=True).reset_index(drop=True)
 mid = df.loc[df['Meal'] == 'lunch'].sort_values(by='Recipe_Title', ascending=True).reset_index(drop=True)
@@ -251,13 +259,10 @@ e47_entry.grid(row=5, column=7)
 e48_entry.grid(row=6, column=7)
 e49_entry.grid(row=7, column=7)
 
-
-
-version_message = Label(root, text="Created by: Dr. Christian B. Lewis, Version 3.0, September 28, 2022")
+version_message = Label(root, text="Created by: Dr. Christian B. Lewis, Version 4.0, April 16, 2024")
 version_message.grid(row=11, column=0, columnspan=5)
 version_message = Label(root, text="For issues reach out to christian.lewis091@gmail.com")
 version_message.grid(row=12, column=0, columnspan=5)
-
 
 def executeList():
 
@@ -335,55 +340,28 @@ def executeList():
     duplicates = x.loc[(x['Duplicate_search'] == True)]                    # dump all the duplicates into one DataFrame (here, there are still multiples of the same things in the dataframe)
     duplicates_list = np.unique(duplicates['Ingredient'])                  # extract a list of all the duplicate ingredients
     array1 = []
-    array2 = []
-    array3 = []
-    type_new = []
+
     for i in range(0, len(duplicates_list)):
         current = duplicates_list[i]                                     # focus on the first duplicate of all of the duplicates
         current = duplicates.loc[(duplicates['Ingredient'] == current)]  # extract a quick mini dataFrame of only the current ingredient
-        quant = np.sum(current['Quantity'])
-        array2.append(quant)
         string1 = ""
-        string2 = ""
         for k in range(0, len(current)):
             row = current.iloc[k]  # access the first row of the mini-dataframe for the first duplicate
             string1 = string1 + str(row['Recipe_Title']) + str('_') + str('+') + str('_')  # create a longer string of all the recipes where its used
-            string2 = string2 + str(row['Unit_of_Measure']) + str('_') + str('+') + str('_')  # create a longer string of all the recipes where its used
         array1.append(string1)
-        array3.append(string2)
 
-    cleaned_data = pd.DataFrame({"Recipe_Title": array1, "Ingredient": duplicates_list, "Quantity": array2, "Unit_of_Measure": array3})
-
+    cleaned_data = pd.DataFrame({"Recipe_Title": array1, "Ingredient": duplicates_list})
     others = x.loc[(x['Duplicate_search'] == False)]  # all the ones where the original dup search was false.
     final_list = pd.concat([cleaned_data, others])
+    final_list['Origin'] = 'Script'
 
     # ADD THE TYPE CATEGORY WHICH LIVES IN THE INGREDIENT DATABASE
     # add the ingredient "types" from the ingredient database
-    ingredient_list = final_list['Ingredient'].reset_index(drop=True)
-    type_list_ing = type_list['Ingredient'].reset_index(drop=True)
-    type_list_types = type_list['Type'].reset_index(drop=True)
-    type_array = []
-
-    # loop through the chosen ingredients
-    for m in range(0, len(ingredient_list)):
-        y = 1
-        # loop through the ingredient database
-        for n in range(0, len(type_list)):
-
-            if str(ingredient_list[m]) == str(type_list_ing[n]):
-                # print(f"{ingredient_list[m]}, {type_list_ing[n]}")
-                type_array.append(type_list_types[n])
-                y = 2  #found a match
-
-
-        if y == 1:  # a match hasn't been found
-            type_array.append("no type")
-
-
-    final_list['Type'] = type_array
-    final_list = final_list[['Ingredient', 'Quantity', 'Unit_of_Measure', 'Type', 'Recipe_Title']]
+    final_list.to_excel('testing.xlsx')
+    final_list = final_list.merge(sup)
+    final_list = final_list.dropna(subset='Origin')
+    final_list = final_list[['Ingredient', 'Type', 'Recipe_Title']]
     final_list = final_list.sort_values(by='Type', ascending=False).reset_index(drop=True)
-    # final_list.to_excel(f'listV4_{today}.xlsx')
 
     # adding printing of the list functionality
     a = [value1, value2, value3, value4, value5, value6, value7]
@@ -417,14 +395,10 @@ def executeList():
         print_post.to_excel(writer, sheet_name="Choices", index=False)
         sourceDF.to_excel(writer, sheet_name="Chosen Recipe Sources", index=False)
 
-
-
-
     end_message = Label(root,
                         text="Output data created! \nPlease check the folder where the .exe file is located ",
                         anchor="e", justify=LEFT)
     end_message.grid(row=16, rowspan=1, column=0, columnspan=5)
-
 
 myButton = Button(root, text="Run", command=executeList, fg='blue')
 myButton.grid(row=10, column=0, columnspan=7)
@@ -432,7 +406,8 @@ myButton.grid(row=10, column=0, columnspan=7)
 summary = 'This app was created by Dr. Christian B Lewis. The current version is 3.0, finalized on September 29, 2022, on a train from Berlin to the Nethlands. ' \
           'Current issues, troubleshooting comments will be listed here. ' \
           'In the future, I want to add the following:' \
-          '1. I want to sort the ingredients based on what I can by at Bin Inn, and at the Farmers Market.'
+          '1. I want to sort the ingredients based on what I can by at Bin Inn, and at the Farmers Market.' \
+          'April 16, 2024: added functionality of adding new recipes thorugh GUI to remove annoying duplicates.'
 
 
 def in_dev():
@@ -440,9 +415,21 @@ def in_dev():
     top.geometry('500x500')
     myLabel = Label(top, text=summary, justify=LEFT, wraplength=300).pack()
 
+def run_another_script():
+    # Call the subprocess module to run another Python script
+    subprocess.call(['python', 'C:/Users/clewis/IdeaProjects/Other/grocery_app/01_scripts/Add_New_Recipe.py'])
+
+# Define the function to be called when the button is clicked
+def on_button_click():
+    # Call the function to run the other script
+    run_another_script()
+
+# Define and place the button
+myButton3 = Button(root, text="Add a new Recipe", command=on_button_click, fg='blue')
+myButton3.grid(row=15, column=0, columnspan=7)
+
 myButton2 = Button(root, text="See Documentation", command=in_dev, fg='blue')
 myButton2.grid(row=13, column=0, columnspan=7)
-
 
 root.mainloop()
 
